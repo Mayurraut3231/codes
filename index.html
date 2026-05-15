@@ -1,75 +1,2287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSE-270-COM · 60 Practicals</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0c10;
+    --card: #13141a;
+    --border: #1e2030;
+    --accent: #f0c040;
+    --accent2: #3de8a0;
+    --text: #e8e8f0;
+    --muted: #6b6d80;
+    --done: #1a2e20;
+    --done-border: #3de8a0;
+    --tag-html: #e34c26;
+    --tag-css: #264de4;
+    --tag-js: #f7df1e;
+    --tag-php: #777bb4;
+    --tag-bootstrap: #7952b3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
 
-    <title>Bootstrap Starter</title>
+  /* HEADER */
+  header {
+    padding: 32px 24px 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .logo { font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  h1 { font-size: clamp(22px, 5vw, 36px); font-weight: 800; line-height: 1.1; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 13px; margin-top: 6px; }
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  /* PROGRESS */
+  .progress-bar-wrap { margin: 20px 0 0; background: var(--border); border-radius: 4px; height: 6px; }
+  .progress-bar-fill { height: 6px; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 4px; transition: width 0.4s ease; }
+  .progress-text { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+  /* FILTERS */
+  .filters {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-btn {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .filter-btn.active, .filter-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  .filter-btn.html.active { background: var(--tag-html); border-color: var(--tag-html); }
+  .filter-btn.css.active { background: var(--tag-css); border-color: var(--tag-css); }
+  .filter-btn.js.active { background: var(--tag-js); border-color: var(--tag-js); color: #111; }
+  .filter-btn.php.active { background: var(--tag-php); border-color: var(--tag-php); }
+  .filter-btn.bootstrap.active { background: var(--tag-bootstrap); border-color: var(--tag-bootstrap); }
+
+  /* SEARCH */
+  .search-wrap { max-width: 900px; margin: 12px auto 0; padding: 0 24px; }
+  .search-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* GRID */
+  .grid { max-width: 900px; margin: 20px auto 60px; padding: 0 24px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2e3050; }
+  .card.done { border-color: var(--done-border); background: var(--done); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 28px;
+  }
+  .card-title { flex: 1; font-size: 14px; font-weight: 400; line-height: 1.4; }
+  .card.done .card-title { color: var(--accent2); }
+
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag {
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .tag.html { background: #e34c2622; color: #e34c26; border: 1px solid #e34c2640; }
+  .tag.css { background: #264de422; color: #7090ff; border: 1px solid #264de440; }
+  .tag.js { background: #f7df1e22; color: #f7df1e; border: 1px solid #f7df1e40; }
+  .tag.php { background: #777bb422; color: #aaa8e0; border: 1px solid #777bb440; }
+  .tag.bootstrap { background: #7952b322; color: #c090ff; border: 1px solid #7952b340; }
+
+  .check-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 12px;
+  }
+  .check-btn:hover { border-color: var(--accent2); }
+  .card.done .check-btn { border-color: var(--accent2); background: var(--accent2); color: #0b0c10; }
+
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.25s; flex-shrink: 0; }
+  .card.open .chevron { transform: rotate(180deg); }
+
+  /* BODY */
+  .card-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px 16px;
+  }
+  .card.open .card-body { display: block; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .explanation {
+    font-size: 13px;
+    color: #b0b0c8;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .explanation b { color: var(--accent); font-weight: 700; }
+  .explanation code {
+    background: #1e2030;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+  }
+
+  pre {
+    background: #090a0e;
+    border: 1px solid #1a1c2a;
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #c8cce0;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .copy-btn:hover { background: var(--accent); color: var(--bg); }
+
+  .key-points { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .kp {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 12px; color: #8888a8; line-height: 1.5;
+  }
+  .kp::before { content: "▸"; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+  /* syntax colors */
+  .kw { color: #c792ea; }
+  .str { color: #c3e88d; }
+  .fn { color: #82aaff; }
+  .cm { color: #546e7a; font-style: italic; }
+  .tag-c { color: #f07178; }
+  .attr { color: #ffcb6b; }
+  .num { color: #f78c6c; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .tags { display: none; }
+  }
+</style>
 </head>
 <body>
 
-    <!-
-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Starter</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">about</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            contact
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">email</a></li>
-            <li><a class="dropdown-item" href="#">mob</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
-        <!-- Main Content -->
-    <div class="container mt-5">
-        <h1 class="text-center">Hello, Bootstrap 👋</h1>
-        <p class="text-center">This is your starter template.</p>
+<header>
+  <div class="logo">VSE-270-COM · Web Development</div>
+  <h1>60 Practicals <span>Explained</span></h1>
+  <p class="subtitle">Click any card to see explanation + code. Check off what you've learned.</p>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pbar" style="width:0%"></div></div>
+  <div class="progress-text" id="ptext">0 / 60 completed</div>
+</header>
 
-        <!-- Example Grid -->
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="p-3 bg-primary text-white">Column 1</div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3 bg-success text-white">Column 2</div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3 bg-warning text-dark">Column 3</div>
-            </div>
-        </div>
-    </div>
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn html" data-filter="html">HTML</button>
+  <button class="filter-btn css" data-filter="css">CSS</button>
+  <button class="filter-btn js" data-filter="js">JavaScript</button>
+  <button class="filter-btn php" data-filter="php">PHP</button>
+  <button class="filter-btn bootstrap" data-filter="bootstrap">Bootstrap</button>
+</div>
+<div class="search-wrap">
+  <input class="search-input" id="searchBox" placeholder="Search practicals..." />
+</div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="grid" id="grid"></div>
 
+<script>
+const practicals = [
+  {
+    id:1, tags:["html"],
+    title:"Create an HTML page to display a student resume using headings, paragraphs, and lists.",
+    explanation:`A <b>resume page</b> uses structural HTML tags. <code>&lt;h1&gt;</code> for name, <code>&lt;h2&gt;</code> for sections like Education & Skills, <code>&lt;p&gt;</code> for text, <code>&lt;ul&gt;</code>/<code>&lt;li&gt;</code> for bullet lists. No CSS needed — just clean HTML structure.`,
+    code:`&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Student Resume&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Mayur Patil&lt;/h1&gt;
+  &lt;p&gt;Computer Engineering | Pravara Rural Engineering College&lt;/p&gt;
+  &lt;hr&gt;
+
+  &lt;h2&gt;Education&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;B.E. Computer Engineering - 2nd Year&lt;/li&gt;
+    &lt;li&gt;HSC - 2022, 85%&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Skills&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;HTML, CSS, JavaScript&lt;/li&gt;
+    &lt;li&gt;Firebase, Node.js&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Projects&lt;/h2&gt;
+  &lt;p&gt;OxidelicStream - Personal Streaming Platform&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+    points:["h1–h6 are heading tags (h1 = biggest)", "ul = unordered list, ol = ordered list, li = list item", "hr adds a horizontal dividing line", "p tag is for paragraphs"]
+  },
+  {
+    id:2, tags:["html"],
+    title:"Design a web page containing an image gallery, hyperlinks to social media pages, and a timetable using tables.",
+    explanation:`Covers three HTML essentials: <b>images</b> (<code>&lt;img src&gt;</code>), <b>links</b> (<code>&lt;a href&gt;</code>), and <b>tables</b> (<code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>). Tables are used for grid data like timetables.`,
+    code:`&lt;h2&gt;Gallery&lt;/h2&gt;
+&lt;img src="photo1.jpg" width="150" alt="Photo 1"&gt;
+&lt;img src="photo2.jpg" width="150" alt="Photo 2"&gt;
+
+&lt;h2&gt;Social Media&lt;/h2&gt;
+&lt;a href="https://instagram.com" target="_blank"&gt;Instagram&lt;/a&gt; |
+&lt;a href="https://twitter.com" target="_blank"&gt;Twitter&lt;/a&gt;
+
+&lt;h2&gt;Timetable&lt;/h2&gt;
+&lt;table border="1"&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Day&lt;/th&gt;&lt;th&gt;9AM&lt;/th&gt;&lt;th&gt;11AM&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Monday&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;td&gt;Physics&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Tuesday&lt;/td&gt;&lt;td&gt;Chemistry&lt;/td&gt;&lt;td&gt;English&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["img tag: src = image path, alt = description, width/height to resize","a href = hyperlink, target='_blank' opens in new tab","table > tr (row) > th (header cell) or td (data cell)","border='1' adds visible table borders"]
+  },
+  {
+    id:3, tags:["html"],
+    title:"Create an online feedback form with fields for username, phone number, course selection, comments, and submit button.",
+    explanation:`<b>HTML Forms</b> collect user input. Key tags: <code>&lt;form&gt;</code>, <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;button&gt;</code>. Each input has a <code>type</code> attribute (text, tel, email...).`,
+    code:`&lt;form action="submit.php" method="POST"&gt;
+  &lt;label&gt;Username:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" name="username" required&gt;&lt;br&gt;
+
+  &lt;label&gt;Phone:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="tel" name="phone"&gt;&lt;br&gt;
+
+  &lt;label&gt;Course:&lt;/label&gt;&lt;br&gt;
+  &lt;select name="course"&gt;
+    &lt;option&gt;Computer Engineering&lt;/option&gt;
+    &lt;option&gt;IT&lt;/option&gt;
+    &lt;option&gt;Mechanical&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+
+  &lt;label&gt;Comments:&lt;/label&gt;&lt;br&gt;
+  &lt;textarea name="comments" rows="4" cols="30"&gt;&lt;/textarea&gt;&lt;br&gt;
+
+  &lt;button type="submit"&gt;Submit Feedback&lt;/button&gt;
+&lt;/form&gt;`,
+    points:["input type='text' for names, type='tel' for phone numbers","select + option creates a dropdown","textarea is for multi-line text input","required attribute makes the field mandatory","method='POST' sends data securely in request body"]
+  },
+  {
+    id:4, tags:["css"],
+    title:"Apply CSS styles using internal, external, and inline methods to design a navigation menu and styled buttons.",
+    explanation:`CSS has <b>3 ways</b> to apply styles: <b>Inline</b> (style attr on element), <b>Internal</b> (&lt;style&gt; tag in &lt;head&gt;), <b>External</b> (separate .css file linked with &lt;link&gt;). Priority: Inline &gt; Internal &gt; External.`,
+    code:`&lt;!-- INLINE --&gt;
+&lt;p style="color:red; font-size:16px;"&gt;Inline styled text&lt;/p&gt;
+
+&lt;!-- INTERNAL (in &lt;head&gt;) --&gt;
+&lt;style&gt;
+  nav { background: #333; padding: 10px; }
+  nav a { color: white; margin: 0 10px; text-decoration: none; }
+  nav a:hover { color: yellow; }
+  .btn { padding: 10px 20px; background: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  .btn:hover { background: darkblue; }
+&lt;/style&gt;
+
+&lt;!-- HTML --&gt;
+&lt;nav&gt;
+  &lt;a href="#"&gt;Home&lt;/a&gt;
+  &lt;a href="#"&gt;About&lt;/a&gt;
+  &lt;a href="#"&gt;Contact&lt;/a&gt;
+&lt;/nav&gt;
+&lt;button class="btn"&gt;Click Me&lt;/button&gt;
+
+&lt;!-- EXTERNAL: save as style.css --&gt;
+&lt;!-- body { font-family: Arial; margin: 0; } --&gt;
+&lt;!-- Link it: &lt;link rel="stylesheet" href="style.css"&gt; --&gt;`,
+    points:["Inline: style='property:value' directly on the tag","Internal: &lt;style&gt; block inside &lt;head&gt; — scoped to that page","External: separate .css file linked with &lt;link rel='stylesheet'&gt;",":hover pseudo-class for mouse-over effects","border-radius rounds button corners"]
+  },
+  {
+    id:5, tags:["bootstrap"],
+    title:"Develop a responsive college website homepage using Bootstrap Navbar, Cards, and Grid System.",
+    explanation:`<b>Bootstrap</b> is a CSS framework. Key concepts: <b>Navbar</b> (top navigation), <b>Grid</b> (12-column layout with col-md-4 etc.), <b>Cards</b> (content boxes). Add Bootstrap via CDN link — no install needed.`,
+    code:`&lt;!-- Add in &lt;head&gt; --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+
+&lt;!-- Navbar --&gt;
+&lt;nav class="navbar navbar-dark bg-dark"&gt;
+  &lt;div class="container"&gt;
+    &lt;a class="navbar-brand" href="#"&gt;My College&lt;/a&gt;
+    &lt;ul class="navbar-nav flex-row"&gt;
+      &lt;li class="nav-item"&gt;&lt;a class="nav-link text-white mx-2" href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="nav-item"&gt;&lt;a class="nav-link text-white mx-2" href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- Grid + Cards --&gt;
+&lt;div class="container mt-4"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-md-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5 class="card-title"&gt;Engineering&lt;/h5&gt;
+          &lt;p class="card-text"&gt;Computer, Mechanical, Civil&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5 class="card-title"&gt;Admissions&lt;/h5&gt;
+          &lt;p class="card-text"&gt;Apply now for 2024-25&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;`,
+    points:["Bootstrap grid: container > row > col-md-4 (4 out of 12 columns)","col-md-4 means 3 cards per row on medium screens","navbar-dark bg-dark = dark navbar styling","Cards are content boxes with card, card-body, card-title classes","Bootstrap is responsive by default — no media queries needed"]
+  },
+  {
+    id:6, tags:["js"],
+    title:"Write a JavaScript program to validate a registration form including password length, mobile number, and required fields.",
+    explanation:`<b>Form validation</b> in JS checks inputs before submission. Use <code>document.getElementById()</code> to get values, check with <code>if</code> conditions, show errors with <code>alert()</code> or DOM manipulation. Return <code>false</code> to stop form submission.`,
+    code:`&lt;form onsubmit="return validate()"&gt;
+  Name: &lt;input id="name" type="text"&gt;&lt;br&gt;
+  Mobile: &lt;input id="mobile" type="text"&gt;&lt;br&gt;
+  Password: &lt;input id="pass" type="password"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function validate() {
+  var name = document.getElementById("name").value;
+  var mobile = document.getElementById("mobile").value;
+  var pass = document.getElementById("pass").value;
+
+  if (name === "") {
+    alert("Name is required!");
+    return false;
+  }
+  if (mobile.length !== 10 || isNaN(mobile)) {
+    alert("Enter valid 10-digit mobile number!");
+    return false;
+  }
+  if (pass.length &lt; 8) {
+    alert("Password must be at least 8 characters!");
+    return false;
+  }
+  alert("Registration successful!");
+  return true;
+}
+&lt;/script&gt;`,
+    points:["onsubmit='return validate()' — returning false stops form submission","document.getElementById('id').value gets the input value",".length checks string/array length","isNaN() returns true if value is NOT a number","Always validate on both client (JS) and server (PHP) side"]
+  },
+  {
+    id:7, tags:["js"],
+    title:"Create a web page that changes background color and text dynamically using JavaScript DOM events.",
+    explanation:`<b>DOM Events</b> let JS react to user actions. <code>onclick</code>, <code>onmouseover</code> etc. trigger functions. Use <code>document.body.style.backgroundColor</code> to change CSS via JS. DOM = Document Object Model (the page as a JS object).`,
+    code:`&lt;h2 id="msg"&gt;Hello!&lt;/h2&gt;
+&lt;button onclick="changeRed()"&gt;Red&lt;/button&gt;
+&lt;button onclick="changeBlue()"&gt;Blue&lt;/button&gt;
+&lt;button onclick="changeGreen()"&gt;Green&lt;/button&gt;
+
+&lt;script&gt;
+function changeRed() {
+  document.body.style.backgroundColor = "red";
+  document.getElementById("msg").innerHTML = "Background is Red!";
+}
+function changeBlue() {
+  document.body.style.backgroundColor = "blue";
+  document.getElementById("msg").innerHTML = "Background is Blue!";
+}
+function changeGreen() {
+  document.body.style.backgroundColor = "green";
+  document.getElementById("msg").innerHTML = "Background is Green!";
+}
+&lt;/script&gt;`,
+    points:["document.body.style.propertyName changes inline CSS from JS","innerHTML gets/sets HTML content inside an element","onclick is the most common event — fires on button click","You can also use addEventListener('click', fn) — more modern","DOM manipulation is the core of interactive web pages"]
+  },
+  {
+    id:8, tags:["js"],
+    title:"Write a JavaScript program to perform arithmetic operations using buttons and functions for a mini calculator.",
+    explanation:`A <b>mini calculator</b> uses JS functions for add/subtract/multiply/divide. Get two input values, convert to numbers with <code>parseFloat()</code>, compute, display result. Good practice for functions and DOM interaction.`,
+    code:`Num 1: &lt;input id="n1" type="number"&gt;
+Num 2: &lt;input id="n2" type="number"&gt;&lt;br&gt;&lt;br&gt;
+&lt;button onclick="calc('+')"&gt;+&lt;/button&gt;
+&lt;button onclick="calc('-')"&gt;-&lt;/button&gt;
+&lt;button onclick="calc('*')"&gt;×&lt;/button&gt;
+&lt;button onclick="calc('/')"&gt;÷&lt;/button&gt;
+&lt;p id="result"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+function calc(op) {
+  var a = parseFloat(document.getElementById("n1").value);
+  var b = parseFloat(document.getElementById("n2").value);
+  var res;
+  if (op === '+') res = a + b;
+  else if (op === '-') res = a - b;
+  else if (op === '*') res = a * b;
+  else if (op === '/') {
+    if (b === 0) { alert("Cannot divide by zero!"); return; }
+    res = a / b;
+  }
+  document.getElementById("result").innerHTML = "Result: " + res;
+}
+&lt;/script&gt;`,
+    points:["parseFloat() converts string input to decimal number (use parseInt for whole numbers)","Pass the operator as a parameter to reuse one function","Always check division by zero","innerHTML = 'text' updates what's shown on screen","Functions with parameters reduce code repetition"]
+  },
+  {
+    id:9, tags:["php"],
+    title:"Design a PHP script to display employee details and current server information.",
+    explanation:`PHP runs on the <b>server</b>. Use <code>echo</code> to output HTML. <b>Superglobal $_SERVER</b> contains server info like server name, PHP version, IP address. PHP code goes inside <code>&lt;?php ... ?&gt;</code> tags.`,
+    code:`&lt;?php
+// Employee details (hardcoded)
+$name = "Rahul Sharma";
+$dept = "IT Department";
+$salary = 45000;
+
+echo "&lt;h2&gt;Employee Details&lt;/h2&gt;";
+echo "&lt;p&gt;Name: $name&lt;/p&gt;";
+echo "&lt;p&gt;Department: $dept&lt;/p&gt;";
+echo "&lt;p&gt;Salary: Rs. $salary&lt;/p&gt;";
+
+echo "&lt;h2&gt;Server Information&lt;/h2&gt;";
+echo "&lt;p&gt;Server Name: " . $_SERVER['SERVER_NAME'] . "&lt;/p&gt;";
+echo "&lt;p&gt;Server Software: " . $_SERVER['SERVER_SOFTWARE'] . "&lt;/p&gt;";
+echo "&lt;p&gt;PHP Version: " . phpversion() . "&lt;/p&gt;";
+echo "&lt;p&gt;Document Root: " . $_SERVER['DOCUMENT_ROOT'] . "&lt;/p&gt;";
+?&gt;`,
+    points:["PHP variables start with $ symbol","echo outputs text/HTML to the browser","$_SERVER is a superglobal array with server info","phpversion() returns current PHP version","String concatenation in PHP uses the dot (.) operator"]
+  },
+  {
+    id:10, tags:["php"],
+    title:"Write a PHP program to accept login credentials using POST method and display a successful login message.",
+    explanation:`<b>POST method</b> sends form data in the request body (not visible in URL — more secure). PHP reads it via <code>$_POST['fieldname']</code>. Check credentials with <code>if/else</code> and show appropriate message.`,
+    code:`&lt;!-- HTML Form --&gt;
+&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="user"&gt;&lt;br&gt;
+  Password: &lt;input type="password" name="pass"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $user = $_POST['user'];
+  $pass = $_POST['pass'];
+
+  if ($user === "admin" &amp;&amp; $pass === "1234") {
+    echo "&lt;p style='color:green'&gt;Login Successful! Welcome, $user&lt;/p&gt;";
+  } else {
+    echo "&lt;p style='color:red'&gt;Invalid credentials. Try again.&lt;/p&gt;";
+  }
+}
+?&gt;`,
+    points:["$_POST['name'] reads POST form data in PHP","$_SERVER['REQUEST_METHOD'] checks if form was submitted","Use === for strict comparison (type + value must match)","action='' submits to the same page (self-processing)","In real apps, never store plain-text passwords — use password_hash()"]
+  },
+  {
+    id:11, tags:["php"],
+    title:"Implement a PHP program for string operations such as uppercase conversion, lowercase conversion, and word count.",
+    explanation:`PHP has <b>built-in string functions</b>. <code>strtoupper()</code>, <code>strtolower()</code>, <code>str_word_count()</code>, <code>strlen()</code> are commonly used. These are tested in practicals to demonstrate PHP's string handling.`,
+    code:`&lt;?php
+$str = "Hello World from PHP Programming";
+
+echo "Original: " . $str . "&lt;br&gt;";
+echo "Uppercase: " . strtoupper($str) . "&lt;br&gt;";
+echo "Lowercase: " . strtolower($str) . "&lt;br&gt;";
+echo "Word Count: " . str_word_count($str) . "&lt;br&gt;";
+echo "Length: " . strlen($str) . " characters&lt;br&gt;";
+echo "Reversed: " . strrev($str) . "&lt;br&gt;";
+echo "Replace 'PHP' with 'Web': " . str_replace("PHP", "Web", $str) . "&lt;br&gt;";
+?&gt;`,
+    points:["strtoupper() → all CAPS, strtolower() → all lowercase","strlen() counts total characters including spaces","str_word_count() counts number of words","strrev() reverses the string","str_replace('find','replace',$str) substitutes words"]
+  },
+  {
+    id:12, tags:["php"],
+    title:"Create a PHP script to store student marks in an associative array and display them in tabular format.",
+    explanation:`<b>Associative arrays</b> in PHP use string keys instead of numbers. <code>$arr = ['name' => 'value']</code>. Use <code>foreach</code> loop to iterate and display in an HTML table with <code>echo</code>.`,
+    code:`&lt;?php
+$students = [
+  ["name" => "Mayur", "maths" => 85, "science" => 90],
+  ["name" => "Priya", "maths" => 78, "science" => 88],
+  ["name" => "Raj",   "maths" => 92, "science" => 75],
+];
+
+echo "&lt;table border='1' cellpadding='8'&gt;";
+echo "&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Maths&lt;/th&gt;&lt;th&gt;Science&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;";
+
+foreach ($students as $s) {
+  $total = $s['maths'] + $s['science'];
+  echo "&lt;tr&gt;";
+  echo "&lt;td&gt;" . $s['name'] . "&lt;/td&gt;";
+  echo "&lt;td&gt;" . $s['maths'] . "&lt;/td&gt;";
+  echo "&lt;td&gt;" . $s['science'] . "&lt;/td&gt;";
+  echo "&lt;td&gt;" . $total . "&lt;/td&gt;";
+  echo "&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["Associative array: $arr['key'] = 'value'","foreach ($array as $item) loops through each element","Multidimensional array = array of arrays","cellpadding adds spacing inside table cells","You can calculate totals inside the loop"]
+  },
+  {
+    id:13, tags:["html"],
+    title:"Create an HTML page to display details of a tourist place using headings, images, and formatted text.",
+    explanation:`Similar to Q1 but with more formatting tags: <code>&lt;b&gt;</code> bold, <code>&lt;i&gt;</code> italic, <code>&lt;u&gt;</code> underline, <code>&lt;br&gt;</code> line break, <code>&lt;img&gt;</code> for images. Good practice for basic HTML text formatting.`,
+    code:`&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;Taj Mahal - Agra, India&lt;/h1&gt;
+  &lt;img src="tajmahal.jpg" width="400" alt="Taj Mahal"&gt;
+
+  &lt;h2&gt;About&lt;/h2&gt;
+  &lt;p&gt;The &lt;b&gt;Taj Mahal&lt;/b&gt; is a &lt;i&gt;UNESCO World Heritage Site&lt;/i&gt; located
+  in &lt;u&gt;Agra, Uttar Pradesh&lt;/u&gt;, India.&lt;/p&gt;
+
+  &lt;h2&gt;Key Facts&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Built by: &lt;b&gt;Mughal Emperor Shah Jahan&lt;/b&gt;&lt;/li&gt;
+    &lt;li&gt;Year: &lt;b&gt;1632 – 1648&lt;/b&gt;&lt;/li&gt;
+    &lt;li&gt;Material: White Marble&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Visiting Hours&lt;/h2&gt;
+  &lt;p&gt;Open: &lt;b&gt;6:00 AM – 6:30 PM&lt;/b&gt; (Friday closed)&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+    points:["b = bold, i = italic, u = underline (formatting tags)","img needs src (path) and alt (description) attributes","Lists (ul/ol) organize information clearly","Always add alt text for accessibility","These tags work inside paragraphs too"]
+  },
+  {
+    id:14, tags:["html"],
+    title:"Design a web page containing a nested list, hyperlinks to educational websites, and a table showing class schedules.",
+    explanation:`<b>Nested lists</b> = a list inside a list item. Useful for hierarchical data. Combine with anchor tags for links and tables for schedule grids.`,
+    code:`&lt;h2&gt;Course Topics (Nested List)&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Web Development
+    &lt;ul&gt;
+      &lt;li&gt;HTML&lt;/li&gt;
+      &lt;li&gt;CSS&lt;/li&gt;
+      &lt;li&gt;JavaScript&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Database
+    &lt;ul&gt;
+      &lt;li&gt;MySQL&lt;/li&gt;
+      &lt;li&gt;MongoDB&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Educational Links&lt;/h2&gt;
+&lt;a href="https://w3schools.com"&gt;W3Schools&lt;/a&gt; |
+&lt;a href="https://mdn.io"&gt;MDN Web Docs&lt;/a&gt;
+
+&lt;h2&gt;Class Schedule&lt;/h2&gt;
+&lt;table border="1"&gt;
+  &lt;tr&gt;&lt;th&gt;Time&lt;/th&gt;&lt;th&gt;Monday&lt;/th&gt;&lt;th&gt;Tuesday&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;9-10&lt;/td&gt;&lt;td&gt;Web Dev&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;10-11&lt;/td&gt;&lt;td&gt;Database&lt;/td&gt;&lt;td&gt;Physics&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["Nested list: put &lt;ul&gt; inside an &lt;li&gt; element","Browser automatically indents nested lists","target='_blank' on links opens a new tab","th = table header (bold + centered by default)","Tables can have colspan/rowspan to merge cells"]
+  },
+  {
+    id:15, tags:["html"],
+    title:"Create a job application form with fields for applicant name, qualification, experience, skills, and submit button.",
+    explanation:`More form practice. Key new elements: <code>&lt;select&gt;</code> for qualification dropdown, <code>number</code> input for experience years, <code>checkbox</code> for multiple skills selection.`,
+    code:`&lt;h2&gt;Job Application Form&lt;/h2&gt;
+&lt;form&gt;
+  Name: &lt;input type="text" name="name" required&gt;&lt;br&gt;&lt;br&gt;
+
+  Qualification:
+  &lt;select name="qual"&gt;
+    &lt;option&gt;BE/BTech&lt;/option&gt;
+    &lt;option&gt;MCA&lt;/option&gt;
+    &lt;option&gt;BSc&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;&lt;br&gt;
+
+  Experience (years):
+  &lt;input type="number" name="exp" min="0" max="30"&gt;&lt;br&gt;&lt;br&gt;
+
+  Skills:&lt;br&gt;
+  &lt;input type="checkbox" name="skills" value="html"&gt; HTML&lt;br&gt;
+  &lt;input type="checkbox" name="skills" value="js"&gt; JavaScript&lt;br&gt;
+  &lt;input type="checkbox" name="skills" value="php"&gt; PHP&lt;br&gt;&lt;br&gt;
+
+  &lt;button type="submit"&gt;Apply Now&lt;/button&gt;
+  &lt;button type="reset"&gt;Clear&lt;/button&gt;
+&lt;/form&gt;`,
+    points:["type='number' shows numeric keyboard on mobile, supports min/max","type='checkbox' allows selecting multiple options","type='reset' clears all form fields","select dropdown is better than text for fixed options","name attribute is what PHP/server reads via $_POST['name']"]
+  },
+  {
+    id:16, tags:["css"],
+    title:"Apply CSS to design a webpage with styled forms, hover effects on buttons, and customized fonts.",
+    explanation:`CSS <b>hover effects</b> use the <code>:hover</code> pseudo-class. <code>transition</code> makes changes animate smoothly. Import custom Google Fonts with <code>@import</code>.`,
+    code:`&lt;style&gt;
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body { font-family: 'Poppins', sans-serif; background: #f0f4f8; }
+
+form { background: white; padding: 24px; width: 320px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+
+input:focus { border-color: #4CAF50; outline: none; }
+
+button {
+  background: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+}
+button:hover { background: #388e3c; transform: scale(1.05); }
+button:active { transform: scale(0.98); }
+&lt;/style&gt;`,
+    points:["@import loads external Google Fonts","transition: property duration easing — animates CSS changes",":hover pseudo-class triggers when mouse is over element",":focus highlights the currently active input",":active triggers while button is being clicked","box-shadow adds depth to cards and forms"]
+  },
+  {
+    id:17, tags:["bootstrap"],
+    title:"Develop a responsive portfolio webpage using Bootstrap Navbar, Grid Layout, and Progress Bars.",
+    explanation:`Bootstrap <b>Progress Bars</b> show skill levels. Use <code>.progress</code> container with <code>.progress-bar</code> inside. Set width via inline style or aria attributes.`,
+    code:`&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+
+&lt;nav class="navbar navbar-dark bg-primary"&gt;
+  &lt;div class="container"&gt;
+    &lt;a class="navbar-brand" href="#"&gt;My Portfolio&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;div class="container mt-4"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-md-6"&gt;
+      &lt;h3&gt;About Me&lt;/h3&gt;
+      &lt;p&gt;Computer Engineering student passionate about web development.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-6"&gt;
+      &lt;h3&gt;Skills&lt;/h3&gt;
+      &lt;p&gt;HTML/CSS&lt;/p&gt;
+      &lt;div class="progress mb-2"&gt;
+        &lt;div class="progress-bar" style="width:90%"&gt;90%&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p&gt;JavaScript&lt;/p&gt;
+      &lt;div class="progress mb-2"&gt;
+        &lt;div class="progress-bar bg-success" style="width:75%"&gt;75%&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p&gt;PHP&lt;/p&gt;
+      &lt;div class="progress"&gt;
+        &lt;div class="progress-bar bg-warning" style="width:60%"&gt;60%&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;`,
+    points:["progress-bar width is set via style='width:X%'","bg-success, bg-warning, bg-danger change bar colors","col-md-6 = half width on medium+ screens (6 of 12 columns)","Bootstrap navbar-brand is the site logo/name","mt-4 = margin-top 4 units (Bootstrap spacing utility)"]
+  },
+  {
+    id:18, tags:["js"],
+    title:"Write a JavaScript program to validate a signup form including password confirmation and age verification.",
+    explanation:`Extension of Q6. New checks: <b>password match</b> (compare two fields) and <b>age range</b> (parseInt + comparison). Shows how to chain multiple validations.`,
+    code:`&lt;form onsubmit="return validateSignup()"&gt;
+  Name: &lt;input id="sname" type="text"&gt;&lt;br&gt;
+  Age: &lt;input id="sage" type="number"&gt;&lt;br&gt;
+  Password: &lt;input id="spass" type="password"&gt;&lt;br&gt;
+  Confirm Password: &lt;input id="sconfirm" type="password"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Sign Up&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function validateSignup() {
+  var name = document.getElementById("sname").value;
+  var age = parseInt(document.getElementById("sage").value);
+  var pass = document.getElementById("spass").value;
+  var confirm = document.getElementById("sconfirm").value;
+
+  if (name === "") { alert("Name required!"); return false; }
+
+  if (isNaN(age) || age &lt; 18 || age &gt; 100) {
+    alert("Age must be between 18 and 100!"); return false;
+  }
+  if (pass.length &lt; 8) {
+    alert("Password must be 8+ characters!"); return false;
+  }
+  if (pass !== confirm) {
+    alert("Passwords do not match!"); return false;
+  }
+  alert("Signup successful!");
+  return true;
+}
+&lt;/script&gt;`,
+    points:["parseInt() converts string to integer","Compare two fields with === to check password match","Chain validations with multiple if + return false","isNaN() returns true if the value is Not a Number","Age verification: check both min and max with &&"]
+  },
+  {
+    id:19, tags:["js"],
+    title:"Create a web page that uses JavaScript DOM methods to add and remove list items dynamically.",
+    explanation:`<b>Dynamic DOM manipulation</b> — adding/removing elements without page reload. Key methods: <code>createElement()</code>, <code>appendChild()</code>, <code>removeChild()</code>, <code>parentNode</code>.`,
+    code:`&lt;input id="itemInput" placeholder="Enter item"&gt;
+&lt;button onclick="addItem()"&gt;Add&lt;/button&gt;
+&lt;ul id="myList"&gt;&lt;/ul&gt;
+
+&lt;script&gt;
+function addItem() {
+  var val = document.getElementById("itemInput").value;
+  if (val === "") { alert("Enter something!"); return; }
+
+  var li = document.createElement("li");
+  li.innerHTML = val + ' &lt;button onclick="removeItem(this)"&gt;❌&lt;/button&gt;';
+  document.getElementById("myList").appendChild(li);
+  document.getElementById("itemInput").value = "";
+}
+
+function removeItem(btn) {
+  var li = btn.parentNode;
+  document.getElementById("myList").removeChild(li);
+}
+&lt;/script&gt;`,
+    points:["createElement('tag') creates a new HTML element in memory","appendChild(el) adds it as the last child of a parent","btn.parentNode gets the parent element (the li)","removeChild(el) deletes an element from the DOM","this inside onclick refers to the element that was clicked"]
+  },
+  {
+    id:20, tags:["js"],
+    title:"Write a JavaScript program to generate a multiplication table for a given number using functions.",
+    explanation:`Classic programming problem. Use a <b>for loop</b> inside a function, build the table string, display it with innerHTML. Tests loops + functions + DOM.`,
+    code:`Number: &lt;input id="num" type="number"&gt;
+&lt;button onclick="generateTable()"&gt;Generate&lt;/button&gt;
+&lt;div id="tableOutput"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+function generateTable() {
+  var n = parseInt(document.getElementById("num").value);
+  if (isNaN(n)) { alert("Enter a number!"); return; }
+
+  var output = "&lt;h3&gt;Multiplication Table of " + n + "&lt;/h3&gt;";
+  output += "&lt;table border='1' cellpadding='6'&gt;";
+
+  for (var i = 1; i &lt;= 10; i++) {
+    output += "&lt;tr&gt;&lt;td&gt;" + n + " × " + i + "&lt;/td&gt;&lt;td&gt;" + (n * i) + "&lt;/td&gt;&lt;/tr&gt;";
+  }
+  output += "&lt;/table&gt;";
+  document.getElementById("tableOutput").innerHTML = output;
+}
+&lt;/script&gt;`,
+    points:["Build HTML string by concatenating with + in a for loop","for (var i = 1; i <= 10; i++) runs 10 times","innerHTML can accept full HTML strings, not just text","parseInt() needed since input value is always a string","Functions make code reusable — call with different numbers"]
+  },
+  {
+    id:21, tags:["php"],
+    title:"Design a PHP script to display a greeting message based on the current time (morning, afternoon, evening).",
+    explanation:`Use PHP <code>date('H')</code> to get current hour (0-23). Use <code>if/elseif/else</code> to pick the greeting. Good demonstration of PHP date functions and conditionals.`,
+    code:`&lt;?php
+$hour = (int) date('H'); // 0–23 format
+
+if ($hour &gt;= 5 &amp;&amp; $hour &lt; 12) {
+  $greeting = "Good Morning! ☀️";
+  $bg = "#fff8dc";
+} elseif ($hour &gt;= 12 &amp;&amp; $hour &lt; 17) {
+  $greeting = "Good Afternoon! 🌤️";
+  $bg = "#ffe4b5";
+} elseif ($hour &gt;= 17 &amp;&amp; $hour &lt; 21) {
+  $greeting = "Good Evening! 🌆";
+  $bg = "#e6e6fa";
+} else {
+  $greeting = "Good Night! 🌙";
+  $bg = "#1a1a2e";
+}
+
+echo "&lt;body style='background:$bg; text-align:center; padding:50px;'&gt;";
+echo "&lt;h1&gt;$greeting&lt;/h1&gt;";
+echo "&lt;p&gt;Current time: " . date('h:i A') . "&lt;/p&gt;";
+echo "&lt;/body&gt;";
+?&gt;`,
+    points:["date('H') = 24-hour format (0-23)","date('h:i A') = 12-hour format with AM/PM","(int) casts the value to integer","elseif chains multiple conditions","date() uses server's current time — timezone matters"]
+  },
+  {
+    id:22, tags:["php"],
+    title:"Write a PHP program to accept student registration details through a form and display them using the POST method.",
+    explanation:`Classic POST form + PHP display. Form submits to itself (action=''), PHP reads <code>$_POST</code> and echoes the data back formatted. The most common PHP exam pattern.`,
+    code:`&lt;form method="POST" action=""&gt;
+  Name: &lt;input type="text" name="name"&gt;&lt;br&gt;
+  Roll No: &lt;input type="text" name="roll"&gt;&lt;br&gt;
+  Branch: &lt;select name="branch"&gt;
+    &lt;option&gt;Computer&lt;/option&gt;
+    &lt;option&gt;IT&lt;/option&gt;
+    &lt;option&gt;Mechanical&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+  Email: &lt;input type="email" name="email"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $name   = htmlspecialchars($_POST['name']);
+  $roll   = htmlspecialchars($_POST['roll']);
+  $branch = htmlspecialchars($_POST['branch']);
+  $email  = htmlspecialchars($_POST['email']);
+
+  echo "&lt;h3&gt;Registration Details&lt;/h3&gt;";
+  echo "&lt;p&gt;Name: $name&lt;/p&gt;";
+  echo "&lt;p&gt;Roll No: $roll&lt;/p&gt;";
+  echo "&lt;p&gt;Branch: $branch&lt;/p&gt;";
+  echo "&lt;p&gt;Email: $email&lt;/p&gt;";
+}
+?&gt;`,
+    points:["htmlspecialchars() prevents XSS attacks by escaping HTML chars","$_SERVER['REQUEST_METHOD'] == 'POST' checks if form was submitted","action='' or action='#' submits to same page","$_POST returns empty if page just loaded (GET request)","Always sanitize user input before displaying or storing"]
+  },
+  {
+    id:23, tags:["php"],
+    title:"Implement a PHP program to replace words in a string, find word positions, and trim spaces.",
+    explanation:`More PHP string functions: <code>str_replace()</code>, <code>strpos()</code> (position), <code>trim()</code> removes whitespace. These are frequently asked in exams.`,
+    code:`&lt;?php
+$str = "  The quick brown fox jumps over the lazy dog  ";
+
+echo "Original: '" . $str . "'&lt;br&gt;";
+echo "Trimmed: '" . trim($str) . "'&lt;br&gt;";
+echo "After replace: " . str_replace("fox", "cat", $str) . "&lt;br&gt;";
+
+$pos = strpos($str, "fox");
+if ($pos !== false) {
+  echo "Position of 'fox': " . $pos . "&lt;br&gt;";
+} else {
+  echo "'fox' not found&lt;br&gt;";
+}
+
+echo "Substring (4,5): " . substr(trim($str), 4, 5) . "&lt;br&gt;";
+echo "Upper: " . strtoupper(trim($str)) . "&lt;br&gt;";
+?&gt;`,
+    points:["trim() removes leading and trailing whitespace","str_replace('find','replace',$str) — case sensitive","strpos() returns position or false if not found — use !== false","substr($str, start, length) extracts a part of string","ltrim() trims left only, rtrim() trims right only"]
+  },
+  {
+    id:24, tags:["php"],
+    title:"Create a PHP script to store and display customer details using multidimensional arrays.",
+    explanation:`<b>Multidimensional arrays</b> = arrays of arrays. Perfect for tabular data like customers. Loop with <code>foreach</code> and display each row in a table.`,
+    code:`&lt;?php
+$customers = [
+  ["id" => 1, "name" => "Amit Shah",  "city" => "Mumbai",  "purchase" => 5000],
+  ["id" => 2, "name" => "Priya Patel","city" => "Pune",    "purchase" => 3200],
+  ["id" => 3, "name" => "Ravi Kumar", "city" => "Delhi",   "purchase" => 7800],
+];
+
+echo "&lt;table border='1' cellpadding='10' style='border-collapse:collapse'&gt;";
+echo "&lt;tr style='background:#4CAF50;color:white'&gt;
+        &lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;City&lt;/th&gt;&lt;th&gt;Purchase (Rs)&lt;/th&gt;
+      &lt;/tr&gt;";
+
+foreach ($customers as $c) {
+  echo "&lt;tr&gt;";
+  echo "&lt;td&gt;{$c['id']}&lt;/td&gt;";
+  echo "&lt;td&gt;{$c['name']}&lt;/td&gt;";
+  echo "&lt;td&gt;{$c['city']}&lt;/td&gt;";
+  echo "&lt;td&gt;{$c['purchase']}&lt;/td&gt;";
+  echo "&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["$arr[0]['key'] accesses first element's 'key' value","border-collapse:collapse merges table borders","{$var} in double-quoted strings works for array vars","foreach ($arr as $item) — $item is a copy, not reference","Add &$item for reference if you need to modify values"]
+  },
+  {
+    id:25, tags:["html"],
+    title:"Create an HTML page to display a student profile including photo, educational details, and hobbies using tables and formatting tags.",
+    explanation:`Structured profile page using HTML tables for layout (old-school method still tested in exams). Tables can have <code>colspan</code> and <code>rowspan</code> to merge cells.`,
+    code:`&lt;table border="1" cellpadding="10" width="500"&gt;
+  &lt;tr&gt;
+    &lt;td colspan="2" align="center" bgcolor="#4CAF50"&gt;
+      &lt;font color="white" size="5"&gt;&lt;b&gt;Student Profile&lt;/b&gt;&lt;/font&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td rowspan="4"&gt;
+      &lt;img src="student.jpg" width="120" alt="Photo"&gt;
+    &lt;/td&gt;
+    &lt;td&gt;&lt;b&gt;Name:&lt;/b&gt; Mayur Patil&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;b&gt;Branch:&lt;/b&gt; Computer Engineering&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;b&gt;Year:&lt;/b&gt; Second Year&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;b&gt;GPA:&lt;/b&gt; 8.5&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;b&gt;Hobbies:&lt;/b&gt;&lt;/td&gt;
+    &lt;td&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Web Development&lt;/li&gt;
+        &lt;li&gt;Gym / Fitness&lt;/li&gt;
+        &lt;li&gt;Gaming&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["colspan='2' makes a cell span 2 columns","rowspan='4' makes a cell span 4 rows","bgcolor and align are old HTML attributes (still tested in college)","You can put lists inside table cells","Tables were used for layout before CSS — now CSS is preferred"]
+  },
+  {
+    id:26, tags:["html"],
+    title:"Design a web page that contains an image gallery, hyperlinks to different websites, and a nested table for timetable details.",
+    explanation:`Combines Q2 and Q14. The new concept is <b>nested tables</b> — a table inside a table cell. Used for complex grid layouts in old-style HTML.`,
+    code:`&lt;h2&gt;Gallery&lt;/h2&gt;
+&lt;table&gt;&lt;tr&gt;
+  &lt;td&gt;&lt;img src="img1.jpg" width="100"&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;img src="img2.jpg" width="100"&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;img src="img3.jpg" width="100"&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h2&gt;Links&lt;/h2&gt;
+&lt;a href="https://google.com"&gt;Google&lt;/a&gt; |
+&lt;a href="https://github.com"&gt;GitHub&lt;/a&gt;
+
+&lt;h2&gt;Nested Timetable&lt;/h2&gt;
+&lt;table border="1"&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Day&lt;/th&gt;
+    &lt;th&gt;Sessions&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Monday&lt;/td&gt;
+    &lt;td&gt;
+      &lt;!-- Nested table inside td --&gt;
+      &lt;table border="1"&gt;
+        &lt;tr&gt;&lt;th&gt;Time&lt;/th&gt;&lt;th&gt;Subject&lt;/th&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;9AM&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;11AM&lt;/td&gt;&lt;td&gt;Physics&lt;/td&gt;&lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["Nested table = table inside a &lt;td&gt; cell","Useful for complex layouts (rarely used with modern CSS)","Each inner table can have its own border and style","Images in a table row create a simple gallery grid","Use CSS grid or flexbox in real projects instead"]
+  },
+  {
+    id:27, tags:["html"],
+    title:"Create a registration form with fields for name, email, password, gender, city selection, hobbies, and submit/reset buttons.",
+    explanation:`Comprehensive form with all input types: text, email, password, <b>radio buttons</b> (gender), select dropdown, checkboxes (hobbies). Radio buttons share the same <code>name</code> so only one can be selected.`,
+    code:`&lt;form&gt;
+  Name: &lt;input type="text" name="name" required&gt;&lt;br&gt;
+  Email: &lt;input type="email" name="email"&gt;&lt;br&gt;
+  Password: &lt;input type="password" name="pass"&gt;&lt;br&gt;
+
+  Gender:&lt;br&gt;
+  &lt;input type="radio" name="gender" value="male"&gt; Male
+  &lt;input type="radio" name="gender" value="female"&gt; Female
+  &lt;input type="radio" name="gender" value="other"&gt; Other&lt;br&gt;
+
+  City: &lt;select name="city"&gt;
+    &lt;option&gt;Mumbai&lt;/option&gt;
+    &lt;option&gt;Pune&lt;/option&gt;
+    &lt;option&gt;Nashik&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+
+  Hobbies:&lt;br&gt;
+  &lt;input type="checkbox" name="hobby" value="reading"&gt; Reading
+  &lt;input type="checkbox" name="hobby" value="sports"&gt; Sports
+  &lt;input type="checkbox" name="hobby" value="coding"&gt; Coding&lt;br&gt;
+
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+  &lt;button type="reset"&gt;Reset&lt;/button&gt;
+&lt;/form&gt;`,
+    points:["Radio buttons with same name = only one selectable","Checkboxes with same name = multiple selectable","type='email' validates email format automatically in browser","type='password' hides typed characters","type='reset' clears all fields in the form"]
+  },
+  {
+    id:28, tags:["css"],
+    title:"Apply internal, external, and inline CSS to style a webpage with navigation menu, tables, and hover effects on buttons.",
+    explanation:`Same concept as Q4 but with more elements. Demonstrates all 3 CSS methods together. Good revision: inline overrides internal overrides external.`,
+    code:`&lt;!-- In &lt;head&gt;: INTERNAL --&gt;
+&lt;style&gt;
+  nav { background: #2c3e50; padding: 12px; }
+  nav a { color: #ecf0f1; margin-right: 15px; text-decoration: none; font-weight: bold; }
+  nav a:hover { color: #f39c12; border-bottom: 2px solid #f39c12; }
+
+  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+  th { background: #2c3e50; color: white; padding: 10px; }
+  td { padding: 8px; border: 1px solid #ddd; text-align: center; }
+  tr:nth-child(even) { background: #f2f2f2; }
+
+  .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+  .btn-primary { background: #3498db; color: white; }
+  .btn-primary:hover { background: #2980b9; transform: translateY(-2px); }
+&lt;/style&gt;
+
+&lt;!-- INLINE example --&gt;
+&lt;p style="color: maroon; font-style: italic;"&gt;Inline styled text&lt;/p&gt;
+
+&lt;!-- EXTERNAL: create style.css file and link it --&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;`,
+    points:["tr:nth-child(even) styles every alternate row (zebra striping)","border-collapse:collapse removes double borders in tables","translateY(-2px) lifts the button up on hover","Specificity order: Inline > ID > Class > Tag","External CSS file keeps styles separated for maintainability"]
+  },
+  {
+    id:29, tags:["bootstrap"],
+    title:"Develop a responsive webpage using Bootstrap Grid System, Cards, Navbar, and Footer components.",
+    explanation:`Full-page Bootstrap layout with all key components. <b>Footer</b> uses Bootstrap's utility classes like <code>bg-dark text-white py-3</code>.`,
+    code:`&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+
+&lt;!-- Navbar --&gt;
+&lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+  &lt;div class="container"&gt;
+    &lt;a class="navbar-brand" href="#"&gt;🎓 CollegeHub&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- Hero --&gt;
+&lt;div class="bg-primary text-white text-center py-5"&gt;
+  &lt;h1&gt;Welcome to CollegeHub&lt;/h1&gt;
+  &lt;p&gt;Your gateway to engineering excellence&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Cards --&gt;
+&lt;div class="container my-4"&gt;
+  &lt;div class="row g-3"&gt;
+    &lt;div class="col-md-4"&gt;
+      &lt;div class="card h-100 shadow"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5&gt;📚 Academics&lt;/h5&gt;
+          &lt;p&gt;World-class curriculum&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-4"&gt;
+      &lt;div class="card h-100 shadow"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5&gt;🏆 Sports&lt;/h5&gt;
+          &lt;p&gt;State-level competitions&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-4"&gt;
+      &lt;div class="card h-100 shadow"&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h5&gt;💼 Placements&lt;/h5&gt;
+          &lt;p&gt;95% placement record&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Footer --&gt;
+&lt;footer class="bg-dark text-white text-center py-3 mt-4"&gt;
+  &lt;p&gt;© 2024 CollegeHub. All rights reserved.&lt;/p&gt;
+&lt;/footer&gt;`,
+    points:["g-3 adds gap between grid columns","h-100 makes all cards equal height","shadow adds box-shadow to cards","py-3 = padding top+bottom, my-4 = margin top+bottom","navbar-expand-lg collapses navbar on small screens"]
+  },
+  {
+    id:30, tags:["js"],
+    title:"Write a JavaScript program to validate a form for empty fields, password length, and proper email format.",
+    explanation:`Email validation uses <b>Regular Expressions (RegEx)</b>. The pattern <code>/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/</code> tests for valid email format using <code>regex.test(email)</code>.`,
+    code:`&lt;form onsubmit="return validateForm()"&gt;
+  Name: &lt;input id="fname" type="text"&gt;&lt;br&gt;
+  Email: &lt;input id="femail" type="text"&gt;&lt;br&gt;
+  Password: &lt;input id="fpass" type="password"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function validateForm() {
+  var name  = document.getElementById("fname").value.trim();
+  var email = document.getElementById("femail").value.trim();
+  var pass  = document.getElementById("fpass").value;
+
+  if (name === "") {
+    alert("Name cannot be empty!"); return false;
+  }
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Invalid email format!"); return false;
+  }
+  if (pass.length &lt; 8) {
+    alert("Password must be at least 8 characters!"); return false;
+  }
+  alert("Form submitted successfully!");
+  return true;
+}
+&lt;/script&gt;`,
+    points:["RegEx /pattern/ tests string patterns","emailRegex.test(str) returns true if pattern matches","^ = start of string, $ = end of string in regex","[^\\s@] = any char that isn't space or @",".trim() removes spaces from start/end of input"]
+  },
+  {
+    id:31, tags:["js"],
+    title:"Create a web page that dynamically changes images and text using JavaScript DOM manipulation.",
+    explanation:`Image slideshow / content switcher using JS. Change <code>img.src</code> to swap images, change <code>element.innerHTML</code> for text. Can use array to store image paths.`,
+    code:`&lt;img id="myImg" src="img1.jpg" width="300"&gt;
+&lt;p id="caption"&gt;Image 1 of 3&lt;/p&gt;
+&lt;button onclick="prevImg()"&gt;◀ Prev&lt;/button&gt;
+&lt;button onclick="nextImg()"&gt;Next ▶&lt;/button&gt;
+
+&lt;script&gt;
+var images = ["img1.jpg", "img2.jpg", "img3.jpg"];
+var captions = ["Beautiful Sunset", "Mountain View", "Ocean Waves"];
+var current = 0;
+
+function nextImg() {
+  current = (current + 1) % images.length;
+  updateDisplay();
+}
+function prevImg() {
+  current = (current - 1 + images.length) % images.length;
+  updateDisplay();
+}
+function updateDisplay() {
+  document.getElementById("myImg").src = images[current];
+  document.getElementById("caption").innerHTML =
+    captions[current] + " (" + (current+1) + " of " + images.length + ")";
+}
+&lt;/script&gt;`,
+    points:["img.src = 'path' swaps the displayed image","% (modulo) wraps index — goes back to 0 after last","(current - 1 + length) % length handles backwards wrap","Arrays hold related data (image paths, captions)","Keep display logic in one function (updateDisplay) — clean code"]
+  },
+  {
+    id:32, tags:["js"],
+    title:"Write a JavaScript program to perform calculator operations (+, −, ×, ÷) using functions and switch-case statements.",
+    explanation:`Same as Q8 but using <b>switch-case</b> instead of if-else. Switch is cleaner when checking one variable against many values.`,
+    code:`Num1: &lt;input id="c1" type="number"&gt;
+Num2: &lt;input id="c2" type="number"&gt;&lt;br&gt;
+&lt;button onclick="calc2('+')"&gt;+&lt;/button&gt;
+&lt;button onclick="calc2('-')"&gt;-&lt;/button&gt;
+&lt;button onclick="calc2('*')"&gt;×&lt;/button&gt;
+&lt;button onclick="calc2('/')"&gt;÷&lt;/button&gt;
+&lt;p id="calcResult"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+function calc2(op) {
+  var a = parseFloat(document.getElementById("c1").value);
+  var b = parseFloat(document.getElementById("c2").value);
+  var result;
+
+  switch(op) {
+    case '+': result = a + b; break;
+    case '-': result = a - b; break;
+    case '*': result = a * b; break;
+    case '/':
+      if (b === 0) { alert("Division by zero!"); return; }
+      result = a / b;
+      break;
+    default: result = "Invalid operator";
+  }
+  document.getElementById("calcResult").innerHTML = "Result: " + result;
+}
+&lt;/script&gt;`,
+    points:["switch(variable) { case 'value': ... break; }","break prevents fall-through to next case","default runs if no case matches (like else)","switch is cleaner than if-elseif for single-variable checks","Always handle division by zero separately"]
+  },
+  {
+    id:33, tags:["php"],
+    title:"Design a PHP script to display a welcome message, current date/time, and browser information.",
+    explanation:`Uses PHP <code>date()</code> for formatted date/time and <code>$_SERVER</code> superglobal for browser/client info. A showcase of PHP server-side capabilities.`,
+    code:`&lt;?php
+echo "&lt;h2&gt;Welcome to Our Website! 🎉&lt;/h2&gt;";
+
+// Date and time
+echo "&lt;h3&gt;Current Date &amp; Time&lt;/h3&gt;";
+echo "&lt;p&gt;Date: " . date("d-m-Y") . "&lt;/p&gt;";
+echo "&lt;p&gt;Time: " . date("h:i:s A") . "&lt;/p&gt;";
+echo "&lt;p&gt;Day: " . date("l") . "&lt;/p&gt;";  // Full day name
+
+// Browser info
+echo "&lt;h3&gt;Your Browser Information&lt;/h3&gt;";
+echo "&lt;p&gt;Browser: " . $_SERVER['HTTP_USER_AGENT'] . "&lt;/p&gt;";
+echo "&lt;p&gt;Your IP: " . $_SERVER['REMOTE_ADDR'] . "&lt;/p&gt;";
+echo "&lt;p&gt;Request Method: " . $_SERVER['REQUEST_METHOD'] . "&lt;/p&gt;";
+?&gt;`,
+    points:["date('d-m-Y') = DD-MM-YYYY format","date('l') = full weekday name (Monday, Tuesday...)","$_SERVER['HTTP_USER_AGENT'] = browser + OS string","$_SERVER['REMOTE_ADDR'] = visitor's IP address","PHP date() uses server timezone — set with date_default_timezone_set()"]
+  },
+  {
+    id:34, tags:["php"],
+    title:"Write a PHP program to accept student details through a form using POST method and display the entered information in table format.",
+    explanation:`Combines form + POST + table display. The result is shown as a formatted HTML table built by PHP. A very common exam practical.`,
+    code:`&lt;form method="POST" action=""&gt;
+  Name: &lt;input type="text" name="name"&gt;
+  Roll No: &lt;input type="text" name="roll"&gt;
+  Marks: &lt;input type="number" name="marks"&gt;
+  &lt;button type="submit"&gt;Show Details&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $name  = htmlspecialchars($_POST['name']);
+  $roll  = htmlspecialchars($_POST['roll']);
+  $marks = (int) $_POST['marks'];
+  $grade = ($marks &gt;= 90) ? 'A+' : (($marks &gt;= 75) ? 'A' : (($marks &gt;= 60) ? 'B' : 'C'));
+
+  echo "&lt;table border='1' cellpadding='10' style='margin-top:20px; border-collapse:collapse'&gt;";
+  echo "&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;";
+  echo "&lt;tr&gt;&lt;td&gt;Name&lt;/td&gt;&lt;td&gt;$name&lt;/td&gt;&lt;/tr&gt;";
+  echo "&lt;tr&gt;&lt;td&gt;Roll No&lt;/td&gt;&lt;td&gt;$roll&lt;/td&gt;&lt;/tr&gt;";
+  echo "&lt;tr&gt;&lt;td&gt;Marks&lt;/td&gt;&lt;td&gt;$marks&lt;/td&gt;&lt;/tr&gt;";
+  echo "&lt;tr&gt;&lt;td&gt;Grade&lt;/td&gt;&lt;td&gt;$grade&lt;/td&gt;&lt;/tr&gt;";
+  echo "&lt;/table&gt;";
+}
+?&gt;`,
+    points:["Ternary operator: condition ? true_val : false_val","Chained ternaries handle multiple conditions","(int) casts to integer — prevents string injection","htmlspecialchars() escapes dangerous HTML characters","Display validation errors above form in real apps"]
+  },
+  {
+    id:35, tags:["php"],
+    title:"Implement a PHP program to perform string operations such as reverse, uppercase conversion, lowercase conversion, and substring extraction.",
+    explanation:`Like Q11 but adds <code>strrev()</code> (reverse) and <code>substr()</code> (extract part of string). Covers all major PHP string functions for exams.`,
+    code:`&lt;?php
+$str = "Web Development with PHP";
+
+echo "&lt;table border='1' cellpadding='8'&gt;";
+echo "&lt;tr&gt;&lt;th&gt;Operation&lt;/th&gt;&lt;th&gt;Result&lt;/th&gt;&lt;/tr&gt;";
+
+$ops = [
+  "Original"         => $str,
+  "Uppercase"        => strtoupper($str),
+  "Lowercase"        => strtolower($str),
+  "Reversed"         => strrev($str),
+  "Length"           => strlen($str),
+  "Word Count"       => str_word_count($str),
+  "Substr(4,11)"     => substr($str, 4, 11),
+  "Replace PHP→JS"   => str_replace("PHP","JavaScript",$str),
+  "Position of PHP"  => strpos($str, "PHP"),
+];
+
+foreach ($ops as $op => $result) {
+  echo "&lt;tr&gt;&lt;td&gt;&lt;b&gt;$op&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$result&lt;/td&gt;&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["strrev() reverses a string character by character","substr($str, start, length) — start is 0-indexed","str_word_count() counts words separated by spaces","Associative array with operation=>result is clean for display","Use this table format to show multiple function outputs"]
+  },
+  {
+    id:36, tags:["php"],
+    title:"Create a PHP script to store student marks in an associative array and calculate total marks and average.",
+    explanation:`Like Q12 but adds <b>calculations</b> — total and average using <code>array_sum()</code> and division. Also uses <code>number_format()</code> to round decimals.`,
+    code:`&lt;?php
+$students = [
+  "Mayur" => ["Maths"=>85, "Science"=>90, "English"=>78],
+  "Priya" => ["Maths"=>92, "Science"=>88, "English"=>95],
+  "Ravi"  => ["Maths"=>70, "Science"=>65, "English"=>80],
+];
+
+echo "&lt;table border='1' cellpadding='8' style='border-collapse:collapse'&gt;";
+echo "&lt;tr style='background:#333;color:white'&gt;
+        &lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Maths&lt;/th&gt;&lt;th&gt;Science&lt;/th&gt;&lt;th&gt;English&lt;/th&gt;
+        &lt;th&gt;Total&lt;/th&gt;&lt;th&gt;Average&lt;/th&gt;
+      &lt;/tr&gt;";
+
+foreach ($students as $name => $marks) {
+  $total = array_sum($marks);
+  $avg   = number_format($total / count($marks), 2);
+  echo "&lt;tr&gt;
+    &lt;td&gt;$name&lt;/td&gt;
+    &lt;td&gt;{$marks['Maths']}&lt;/td&gt;
+    &lt;td&gt;{$marks['Science']}&lt;/td&gt;
+    &lt;td&gt;{$marks['English']}&lt;/td&gt;
+    &lt;td&gt;&lt;b&gt;$total&lt;/b&gt;&lt;/td&gt;
+    &lt;td&gt;$avg&lt;/td&gt;
+  &lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["array_sum($arr) adds all values in an array","count($arr) returns number of elements","number_format($num, 2) rounds to 2 decimal places","foreach ($arr as $key => $value) gets both key and value","In nested arrays, access with $marks['Subject']"]
+  },
+  {
+    id:37, tags:["html"],
+    title:"Create an HTML page to display faculty profile information using headings, images, paragraphs, and lists.",
+    explanation:`Faculty profile page — same structure as Q25 student profile. Uses headings, image, bio paragraph, and lists for qualifications/subjects taught.`,
+    code:`&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body style="font-family: Arial; max-width:600px; margin:auto"&gt;
+  &lt;h1 style="color:#2c3e50"&gt;Faculty Profile&lt;/h1&gt;
+  &lt;hr&gt;
+  &lt;img src="faculty.jpg" width="150" align="right" alt="Faculty Photo"&gt;
+
+  &lt;h2&gt;Prof. Anita Sharma&lt;/h2&gt;
+  &lt;p&gt;&lt;b&gt;Department:&lt;/b&gt; Computer Engineering&lt;br&gt;
+     &lt;b&gt;Designation:&lt;/b&gt; Assistant Professor&lt;br&gt;
+     &lt;b&gt;Experience:&lt;/b&gt; 10 Years&lt;/p&gt;
+
+  &lt;h3&gt;Qualifications&lt;/h3&gt;
+  &lt;ol&gt;
+    &lt;li&gt;Ph.D. Computer Science - Pune University&lt;/li&gt;
+    &lt;li&gt;M.E. Computer Engineering - SPPU&lt;/li&gt;
+    &lt;li&gt;B.E. Computer Engineering&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;h3&gt;Subjects Teaching&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Web Development&lt;/li&gt;
+    &lt;li&gt;Data Structures&lt;/li&gt;
+    &lt;li&gt;Computer Networks&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+    points:["ol = ordered list (numbered), ul = unordered list (bullets)","align='right' floats image to the right (old HTML attribute)","max-width + margin:auto centers content","br inside p creates line breaks without new paragraph","h1 > h2 > h3 establishes visual hierarchy"]
+  },
+  {
+    id:38, tags:["html"],
+    title:"Design a web page containing product images, hyperlinks to e-commerce websites, and a product price table.",
+    explanation:`Product page with images, links to shopping sites, and a price comparison table. Combines all basic HTML tags in an e-commerce context.`,
+    code:`&lt;h1&gt;Our Products&lt;/h1&gt;
+
+&lt;h2&gt;Featured Products&lt;/h2&gt;
+&lt;img src="phone.jpg" width="120" alt="Smartphone"&gt;
+&lt;img src="laptop.jpg" width="120" alt="Laptop"&gt;
+&lt;img src="headphone.jpg" width="120" alt="Headphones"&gt;
+
+&lt;h2&gt;Shop On&lt;/h2&gt;
+&lt;a href="https://amazon.in" target="_blank"&gt;Amazon&lt;/a&gt; |
+&lt;a href="https://flipkart.com" target="_blank"&gt;Flipkart&lt;/a&gt; |
+&lt;a href="https://meesho.com" target="_blank"&gt;Meesho&lt;/a&gt;
+
+&lt;h2&gt;Price Table&lt;/h2&gt;
+&lt;table border="1" cellpadding="10"&gt;
+  &lt;tr bgcolor="#ff9900"&gt;
+    &lt;th&gt;Product&lt;/th&gt;&lt;th&gt;Brand&lt;/th&gt;&lt;th&gt;Price (Rs)&lt;/th&gt;&lt;th&gt;Rating&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Smartphone&lt;/td&gt;&lt;td&gt;Samsung&lt;/td&gt;&lt;td&gt;15,999&lt;/td&gt;&lt;td&gt;4.5⭐&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr bgcolor="#f9f9f9"&gt;&lt;td&gt;Laptop&lt;/td&gt;&lt;td&gt;HP&lt;/td&gt;&lt;td&gt;55,000&lt;/td&gt;&lt;td&gt;4.3⭐&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Headphones&lt;/td&gt;&lt;td&gt;Sony&lt;/td&gt;&lt;td&gt;8,999&lt;/td&gt;&lt;td&gt;4.7⭐&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["bgcolor on tr/td adds row background color","Multiple images side by side — browsers render inline elements in a row","target='_blank' opens links in new tab (important for external sites)","th inside first tr creates the header row","Alternate row colors improve table readability"]
+  },
+  {
+    id:39, tags:["html"],
+    title:"Create an online student admission form with fields for student name, email address, gender, branch selection, hobbies, and submit button.",
+    explanation:`Admission form — comprehensive practice of all form elements. Very similar to Q27. Key difference: branch is a &lt;select&gt; dropdown and hobbies are checkboxes.`,
+    code:`&lt;h2&gt;Student Admission Form 2024-25&lt;/h2&gt;
+&lt;form method="POST" action="admit.php"&gt;
+  &lt;label&gt;Full Name:&lt;/label&gt;
+  &lt;input type="text" name="name" placeholder="Enter full name" required&gt;&lt;br&gt;&lt;br&gt;
+
+  &lt;label&gt;Email Address:&lt;/label&gt;
+  &lt;input type="email" name="email" required&gt;&lt;br&gt;&lt;br&gt;
+
+  &lt;label&gt;Gender:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="radio" name="gender" value="M"&gt; Male
+  &lt;input type="radio" name="gender" value="F"&gt; Female&lt;br&gt;&lt;br&gt;
+
+  &lt;label&gt;Branch:&lt;/label&gt;
+  &lt;select name="branch" required&gt;
+    &lt;option value=""&gt;--Select Branch--&lt;/option&gt;
+    &lt;option&gt;Computer Engineering&lt;/option&gt;
+    &lt;option&gt;IT&lt;/option&gt;
+    &lt;option&gt;Mechanical&lt;/option&gt;
+    &lt;option&gt;Civil&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;&lt;br&gt;
+
+  &lt;label&gt;Hobbies:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="checkbox" value="reading"&gt; Reading
+  &lt;input type="checkbox" value="sports"&gt; Sports
+  &lt;input type="checkbox" value="music"&gt; Music&lt;br&gt;&lt;br&gt;
+
+  &lt;button type="submit"&gt;Submit Application&lt;/button&gt;
+&lt;/form&gt;`,
+    points:["placeholder shows hint text inside input field","Default option with empty value + required forces selection","label tag improves accessibility (links text to input)","type='email' validates format automatically","Each form control should have a name attribute for server processing"]
+  },
+  {
+    id:40, tags:["css"],
+    title:"Apply CSS styles using inline, internal, and external CSS to create a styled login form and footer section.",
+    explanation:`Login form with professional CSS styling. Demonstrates card layout for form, centered with flexbox. Good practice for CSS box model and form styling.`,
+    code:`&lt;style&gt;
+/* INTERNAL CSS */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  font-family: 'Segoe UI', sans-serif;
+}
+.login-box {
+  background: white;
+  width: 320px;
+  margin: 60px auto;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.login-box h2 { text-align: center; color: #333; }
+.login-box input {
+  width: 100%; padding: 12px;
+  margin: 8px 0; border: 1px solid #ddd;
+  border-radius: 8px; box-sizing: border-box;
+}
+.login-btn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white; border: none; border-radius: 8px; cursor: pointer;
+  font-size: 16px; transition: opacity 0.3s;
+}
+.login-btn:hover { opacity: 0.85; }
+footer { background: #333; color: white; text-align: center; padding: 16px; }
+&lt;/style&gt;
+
+&lt;div class="login-box"&gt;
+  &lt;h2&gt;Login&lt;/h2&gt;
+  &lt;input type="email" placeholder="Email Address"&gt;
+  &lt;input type="password" placeholder="Password"&gt;
+  &lt;button class="login-btn"&gt;Sign In&lt;/button&gt;
+  &lt;!-- INLINE --&gt;
+  &lt;p style="text-align:center; font-size:13px"&gt;Forgot password? &lt;a href="#"&gt;Reset&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;footer&gt;© 2024 All Rights Reserved&lt;/footer&gt;`,
+    points:["linear-gradient creates color gradients for backgrounds","flex + justify-content: space-between pushes footer to bottom","box-shadow with rgba() creates depth effect","opacity change on hover is subtle and smooth","box-sizing: border-box includes padding in width calculation"]
+  },
+  {
+    id:41, tags:["bootstrap"],
+    title:"Develop a responsive hospital website homepage using Bootstrap Carousel, Cards, and Grid System.",
+    explanation:`<b>Bootstrap Carousel</b> = image slideshow. Needs Bootstrap JS + Popper. Key classes: <code>.carousel</code>, <code>.carousel-item</code>, <code>.carousel-control-prev/next</code>.`,
+    code:`&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;nav class="navbar navbar-dark bg-danger"&gt;
+  &lt;div class="container"&gt;
+    &lt;a class="navbar-brand"&gt;🏥 CityHospital&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- Carousel --&gt;
+&lt;div id="hospitalCarousel" class="carousel slide" data-bs-ride="carousel"&gt;
+  &lt;div class="carousel-inner"&gt;
+    &lt;div class="carousel-item active"&gt;
+      &lt;img src="hospital1.jpg" class="d-block w-100" style="height:300px;object-fit:cover" alt="..."&gt;
+      &lt;div class="carousel-caption"&gt;&lt;h5&gt;World-class Care&lt;/h5&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="carousel-item"&gt;
+      &lt;img src="hospital2.jpg" class="d-block w-100" style="height:300px;object-fit:cover" alt="..."&gt;
+      &lt;div class="carousel-caption"&gt;&lt;h5&gt;24/7 Emergency&lt;/h5&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="carousel-control-prev" data-bs-target="#hospitalCarousel" data-bs-slide="prev"&gt;
+    &lt;span class="carousel-control-prev-icon"&gt;&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="carousel-control-next" data-bs-target="#hospitalCarousel" data-bs-slide="next"&gt;
+    &lt;span class="carousel-control-next-icon"&gt;&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="container mt-4"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-md-4"&gt;&lt;div class="card text-center p-3"&gt;&lt;h5&gt;❤️ Cardiology&lt;/h5&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="col-md-4"&gt;&lt;div class="card text-center p-3"&gt;&lt;h5&gt;🦷 Dentistry&lt;/h5&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="col-md-4"&gt;&lt;div class="card text-center p-3"&gt;&lt;h5&gt;🧠 Neurology&lt;/h5&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;`,
+    points:["Carousel needs Bootstrap JS (use bundle.min.js)","data-bs-ride='carousel' enables auto-sliding","First carousel-item must have 'active' class","data-bs-target='#id' connects buttons to carousel by ID","object-fit:cover makes images fill without stretching"]
+  },
+  {
+    id:42, tags:["js"],
+    title:"Write a JavaScript program to validate a student login form including email format, password confirmation, and empty field checking.",
+    explanation:`Login validation: check email format with regex, password length, and empty fields. Similar to Q30 but in a login context.`,
+    code:`&lt;form onsubmit="return loginValidate()"&gt;
+  Email: &lt;input id="lemail" type="text"&gt;&lt;br&gt;
+  Password: &lt;input id="lpass" type="password"&gt;&lt;br&gt;
+  &lt;span id="lerror" style="color:red"&gt;&lt;/span&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function loginValidate() {
+  var email = document.getElementById("lemail").value.trim();
+  var pass  = document.getElementById("lpass").value;
+  var errEl = document.getElementById("lerror");
+
+  if (email === "" || pass === "") {
+    errEl.innerHTML = "⚠️ All fields are required!";
+    return false;
+  }
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    errEl.innerHTML = "⚠️ Invalid email format!";
+    return false;
+  }
+  if (pass.length &lt; 6) {
+    errEl.innerHTML = "⚠️ Password must be at least 6 characters!";
+    return false;
+  }
+  errEl.innerHTML = "";
+  alert("Login successful!");
+  return true;
+}
+&lt;/script&gt;`,
+    points:["Show errors inline (in a span) instead of alert for better UX","Clear error message at the end if all passes","Validate empty AND format for email","trim() removes extra spaces that users accidentally type","Display errors near the relevant field, not at page top"]
+  },
+  {
+    id:43, tags:["js"],
+    title:"Create a web page that changes font size, text color, and image dynamically using JavaScript DOM manipulation.",
+    explanation:`Similar to Q7 but targets specific properties: <code>style.fontSize</code>, <code>style.color</code>, <code>style.width</code> for images. Demonstrates targeting any CSS property via JS.`,
+    code:`&lt;p id="demoText" style="font-size:16px; color:black"&gt;
+  Change my style with the buttons below!
+&lt;/p&gt;
+&lt;img id="demoImg" src="sample.jpg" width="200"&gt;&lt;br&gt;&lt;br&gt;
+
+&lt;button onclick="bigText()"&gt;Big Text&lt;/button&gt;
+&lt;button onclick="smallText()"&gt;Small Text&lt;/button&gt;
+&lt;button onclick="redText()"&gt;Red&lt;/button&gt;
+&lt;button onclick="blueText()"&gt;Blue&lt;/button&gt;
+&lt;button onclick="bigImg()"&gt;Big Image&lt;/button&gt;
+&lt;button onclick="smallImg()"&gt;Small Image&lt;/button&gt;
+
+&lt;script&gt;
+var el = document.getElementById("demoText");
+var img = document.getElementById("demoImg");
+
+function bigText()   { el.style.fontSize = "28px"; }
+function smallText() { el.style.fontSize = "12px"; }
+function redText()   { el.style.color = "red"; }
+function blueText()  { el.style.color = "blue"; }
+function bigImg()    { img.style.width = "350px"; }
+function smallImg()  { img.style.width = "100px"; }
+&lt;/script&gt;`,
+    points:["element.style.fontSize — note camelCase (not font-size)","element.style.color = 'colorname or #hex'","Store element reference in variable to avoid repeated getElementById","CSS property names in JS are camelCase: backgroundColor, borderRadius","Style changes are instant — add transition CSS for smooth animation"]
+  },
+  {
+    id:44, tags:["js"],
+    title:"Write a JavaScript program to calculate simple interest, compound interest, and percentage using buttons and functions.",
+    explanation:`Mathematical calculations in JS. Formulas: <b>SI</b> = P×R×T/100, <b>CI</b> = P×(1+R/100)^T - P, <b>%</b> = (part/total)×100. Uses <code>Math.pow()</code>.`,
+    code:`P: &lt;input id="principal" type="number" placeholder="Principal"&gt;
+R: &lt;input id="rate" type="number" placeholder="Rate %"&gt;
+T: &lt;input id="time" type="number" placeholder="Time (years)"&gt;&lt;br&gt;&lt;br&gt;
+&lt;button onclick="calcSI()"&gt;Simple Interest&lt;/button&gt;
+&lt;button onclick="calcCI()"&gt;Compound Interest&lt;/button&gt;
+&lt;button onclick="calcPerc()"&gt;Percentage (P of R)&lt;/button&gt;
+&lt;p id="finResult"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+function getVals() {
+  return {
+    p: parseFloat(document.getElementById("principal").value),
+    r: parseFloat(document.getElementById("rate").value),
+    t: parseFloat(document.getElementById("time").value)
+  };
+}
+function calcSI() {
+  var v = getVals();
+  var si = (v.p * v.r * v.t) / 100;
+  document.getElementById("finResult").innerHTML =
+    "Simple Interest = Rs. " + si.toFixed(2);
+}
+function calcCI() {
+  var v = getVals();
+  var ci = v.p * (Math.pow(1 + v.r/100, v.t)) - v.p;
+  document.getElementById("finResult").innerHTML =
+    "Compound Interest = Rs. " + ci.toFixed(2);
+}
+function calcPerc() {
+  var v = getVals();
+  var perc = (v.p / v.r) * 100;
+  document.getElementById("finResult").innerHTML =
+    v.p + " is " + perc.toFixed(2) + "% of " + v.r;
+}
+&lt;/script&gt;`,
+    points:["Math.pow(base, exponent) calculates power (e.g., 2^3 = 8)","toFixed(2) rounds to 2 decimal places","Extract repeated logic (getVals) into a helper function","SI = P*R*T/100 | CI = P*(1+R/100)^T - P","Always validate inputs before calculating in real apps"]
+  },
+  {
+    id:45, tags:["php"],
+    title:"Design a PHP script to display student information and browser details using predefined server variables.",
+    explanation:`PHP <b>predefined/superglobal variables</b>: <code>$_SERVER</code>, <code>$_GET</code>, <code>$_POST</code>, <code>$_SESSION</code>, etc. This practical shows all useful $_SERVER keys.`,
+    code:`&lt;?php
+// Hardcoded student info
+$student = [
+  "name"   => "Mayur Patil",
+  "rollno" => "2201",
+  "branch" => "Computer Engineering",
+  "year"   => "Second Year"
+];
+
+echo "&lt;h2&gt;Student Information&lt;/h2&gt;";
+echo "&lt;table border='1' cellpadding='8'&gt;";
+foreach ($student as $key => $val) {
+  echo "&lt;tr&gt;&lt;td&gt;&lt;b&gt;" . ucfirst($key) . "&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$val&lt;/td&gt;&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+
+echo "&lt;h2&gt;Browser &amp; Server Details&lt;/h2&gt;";
+$serverInfo = [
+  "Browser"        => $_SERVER['HTTP_USER_AGENT'],
+  "Client IP"      => $_SERVER['REMOTE_ADDR'],
+  "Server Name"    => $_SERVER['SERVER_NAME'],
+  "PHP Version"    => PHP_VERSION,
+  "Script Name"    => $_SERVER['SCRIPT_NAME'],
+  "Request Method" => $_SERVER['REQUEST_METHOD'],
+];
+echo "&lt;table border='1' cellpadding='8'&gt;";
+foreach ($serverInfo as $label => $val) {
+  echo "&lt;tr&gt;&lt;td&gt;&lt;b&gt;$label&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$val&lt;/td&gt;&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["ucfirst() capitalizes first letter of a string","PHP_VERSION is a predefined constant (no $ needed)","$_SERVER['SCRIPT_NAME'] = current script path","Looping over associative array with $key => $value","Constants like PHP_VERSION don't have $ prefix"]
+  },
+  {
+    id:46, tags:["php"],
+    title:"Write a PHP program to accept user feedback using POST method and display the entered details in formatted output.",
+    explanation:`Feedback form → PHP processing → formatted display. Similar to Q22/Q34 but focused on feedback fields (rating, comments, name).`,
+    code:`&lt;form method="POST" action=""&gt;
+  Name: &lt;input type="text" name="fname" required&gt;&lt;br&gt;
+  Email: &lt;input type="email" name="femail"&gt;&lt;br&gt;
+  Rating:
+  &lt;select name="rating"&gt;
+    &lt;option&gt;5 - Excellent&lt;/option&gt;
+    &lt;option&gt;4 - Good&lt;/option&gt;
+    &lt;option&gt;3 - Average&lt;/option&gt;
+    &lt;option&gt;2 - Poor&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+  Comments:&lt;br&gt;
+  &lt;textarea name="comments" rows="4" cols="40"&gt;&lt;/textarea&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Submit Feedback&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $name     = htmlspecialchars($_POST['fname']);
+  $email    = htmlspecialchars($_POST['femail']);
+  $rating   = htmlspecialchars($_POST['rating']);
+  $comments = htmlspecialchars($_POST['comments']);
+  $date     = date("d-m-Y H:i");
+
+  echo "&lt;div style='border:1px solid #ccc; padding:20px; margin:20px; border-radius:8px'&gt;";
+  echo "&lt;h3&gt;✅ Thank you for your feedback, $name!&lt;/h3&gt;";
+  echo "&lt;p&gt;&lt;b&gt;Email:&lt;/b&gt; $email&lt;/p&gt;";
+  echo "&lt;p&gt;&lt;b&gt;Rating:&lt;/b&gt; $rating&lt;/p&gt;";
+  echo "&lt;p&gt;&lt;b&gt;Comments:&lt;/b&gt; $comments&lt;/p&gt;";
+  echo "&lt;p&gt;&lt;b&gt;Submitted on:&lt;/b&gt; $date&lt;/p&gt;";
+  echo "&lt;/div&gt;";
+}
+?&gt;`,
+    points:["textarea sends multi-line text via POST","htmlspecialchars() escapes &lt; &gt; & \" characters","Wrap output in styled div for professional look","date('d-m-Y H:i') shows date and time of submission","Always show confirmation message after form submission"]
+  },
+  {
+    id:47, tags:["php"],
+    title:"Implement a PHP program for array operations such as sorting, searching, and finding maximum value.",
+    explanation:`PHP <b>array functions</b>: <code>sort()</code>, <code>rsort()</code>, <code>in_array()</code>, <code>max()</code>, <code>min()</code>, <code>array_search()</code>. Very commonly tested.`,
+    code:`&lt;?php
+$numbers = [45, 12, 78, 23, 56, 89, 34];
+$fruits  = ["Mango", "Apple", "Banana", "Cherry", "Grapes"];
+
+echo "&lt;h3&gt;Number Array Operations&lt;/h3&gt;";
+echo "Original: " . implode(", ", $numbers) . "&lt;br&gt;";
+
+sort($numbers);
+echo "Sorted Asc: " . implode(", ", $numbers) . "&lt;br&gt;";
+
+rsort($numbers);
+echo "Sorted Desc: " . implode(", ", $numbers) . "&lt;br&gt;";
+
+echo "Max: " . max($numbers) . "&lt;br&gt;";
+echo "Min: " . min($numbers) . "&lt;br&gt;";
+echo "Sum: " . array_sum($numbers) . "&lt;br&gt;";
+
+$search = 56;
+if (in_array($search, $numbers)) {
+  echo "$search found in array!&lt;br&gt;";
+}
+
+echo "&lt;h3&gt;String Array Sort&lt;/h3&gt;";
+sort($fruits);
+echo implode(", ", $fruits);
+?&gt;`,
+    points:["sort() sorts ascending, rsort() sorts descending","max() and min() find largest and smallest values","in_array($val, $arr) returns true if value exists","implode(', ', $arr) joins array into a string (opposite of explode)","array_sum() adds all numeric values in array"]
+  },
+  {
+    id:48, tags:["php"],
+    title:"Create a PHP script to store product names and prices in an associative array and display them in tabular format.",
+    explanation:`Like Q12 but with products. Practice associative arrays + table display + formatting price with currency.`,
+    code:`&lt;?php
+$products = [
+  "Laptop"     => 55000,
+  "Smartphone" => 18000,
+  "Headphones" => 3500,
+  "Keyboard"   => 1200,
+  "Mouse"      => 800,
+];
+
+arsort($products); // Sort by price descending
+
+echo "&lt;h2&gt;Product Price List&lt;/h2&gt;";
+echo "&lt;table border='1' cellpadding='10' style='border-collapse:collapse;width:400px'&gt;";
+echo "&lt;tr style='background:#2196F3;color:white'&gt;
+        &lt;th&gt;#&lt;/th&gt;&lt;th&gt;Product&lt;/th&gt;&lt;th&gt;Price (Rs)&lt;/th&gt;
+      &lt;/tr&gt;";
+
+$i = 1;
+foreach ($products as $name => $price) {
+  $bg = ($i % 2 == 0) ? "#f5f5f5" : "white";
+  echo "&lt;tr style='background:$bg'&gt;";
+  echo "&lt;td&gt;$i&lt;/td&gt;";
+  echo "&lt;td&gt;$name&lt;/td&gt;";
+  echo "&lt;td&gt;Rs. " . number_format($price) . "&lt;/td&gt;";
+  echo "&lt;/tr&gt;";
+  $i++;
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["arsort() sorts associative array by value descending","asort() sorts by value ascending (maintains key-value pairs)","number_format($price) adds comma separators (18,000)","$i % 2 == 0 checks if even — used for zebra striping","Manual counter $i++ needed since foreach doesn't give index"]
+  },
+  {
+    id:49, tags:["html"],
+    title:"Create an HTML page to display a tourist place description using headings, paragraphs, images, and unordered lists.",
+    explanation:`Like Q13 but emphasis on <code>&lt;ul&gt;</code> unordered lists for features, must-visit spots etc. Good practice for combining all basic HTML elements.`,
+    code:`&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Visit Goa&lt;/title&gt;&lt;/head&gt;
+&lt;body style="font-family:Georgia; max-width:700px; margin:auto; padding:20px"&gt;
+  &lt;h1 style="color:#1a6b3a"&gt;🌴 Goa - Pearl of the Orient&lt;/h1&gt;
+
+  &lt;img src="goa.jpg" width="100%" style="border-radius:10px" alt="Goa Beach"&gt;
+
+  &lt;h2&gt;About Goa&lt;/h2&gt;
+  &lt;p&gt;Goa is India's smallest state known for its &lt;b&gt;stunning beaches&lt;/b&gt;,
+  &lt;i&gt;Portuguese architecture&lt;/i&gt;, and vibrant nightlife. Located on the
+  west coast, it attracts millions of tourists every year.&lt;/p&gt;
+
+  &lt;h2&gt;Must-Visit Places&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Baga Beach - Famous for water sports&lt;/li&gt;
+    &lt;li&gt;Basilica of Bom Jesus - UNESCO Heritage&lt;/li&gt;
+    &lt;li&gt;Dudhsagar Falls - Stunning waterfall&lt;/li&gt;
+    &lt;li&gt;Anjuna Flea Market - Shopping paradise&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Best Time to Visit&lt;/h2&gt;
+  &lt;p&gt;&lt;b&gt;November to February&lt;/b&gt; — cool and pleasant weather ideal for beach activities.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+    points:["width='100%' makes image fill its container","border-radius on img rounds the corners","b, i, u can be nested inside p for emphasis","ul + li is the standard for feature lists","Always use descriptive alt text for images"]
+  },
+  {
+    id:50, tags:["html"],
+    title:"Design a web page containing a photo gallery, hyperlinks to educational websites, and a weekly class schedule using tables.",
+    explanation:`Similar to Q2/Q26. Weekly timetable is a more complex table with days as columns and times as rows. Uses <code>colspan</code> for merged cells (like lunch break).`,
+    code:`&lt;h2&gt;Photo Gallery&lt;/h2&gt;
+&lt;table&gt;&lt;tr&gt;
+  &lt;td&gt;&lt;img src="p1.jpg" width="120" height="90"&gt;&lt;br&gt;Seminar&lt;/td&gt;
+  &lt;td&gt;&lt;img src="p2.jpg" width="120" height="90"&gt;&lt;br&gt;Lab Work&lt;/td&gt;
+  &lt;td&gt;&lt;img src="p3.jpg" width="120" height="90"&gt;&lt;br&gt;Campus&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h2&gt;Educational Links&lt;/h2&gt;
+&lt;a href="https://nptel.ac.in"&gt;NPTEL&lt;/a&gt; |
+&lt;a href="https://coursera.org"&gt;Coursera&lt;/a&gt; |
+&lt;a href="https://edx.org"&gt;edX&lt;/a&gt;
+
+&lt;h2&gt;Weekly Class Schedule&lt;/h2&gt;
+&lt;table border="1" cellpadding="8" style="border-collapse:collapse"&gt;
+  &lt;tr bgcolor="#2196F3" style="color:white"&gt;
+    &lt;th&gt;Time&lt;/th&gt;&lt;th&gt;Mon&lt;/th&gt;&lt;th&gt;Tue&lt;/th&gt;&lt;th&gt;Wed&lt;/th&gt;&lt;th&gt;Thu&lt;/th&gt;&lt;th&gt;Fri&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;9-10&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;td&gt;Web Dev&lt;/td&gt;&lt;td&gt;Physics&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;td&gt;Web Dev&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;10-11&lt;/td&gt;&lt;td&gt;Physics&lt;/td&gt;&lt;td&gt;Database&lt;/td&gt;&lt;td&gt;Maths&lt;/td&gt;&lt;td&gt;Web Dev&lt;/td&gt;&lt;td&gt;Lab&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;1-2&lt;/td&gt;&lt;td colspan="5" align="center"&gt;Lunch Break&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;2-4&lt;/td&gt;&lt;td&gt;Lab&lt;/td&gt;&lt;td&gt;Library&lt;/td&gt;&lt;td&gt;Lab&lt;/td&gt;&lt;td&gt;Sports&lt;/td&gt;&lt;td&gt;Free&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;`,
+    points:["colspan='5' merges 5 columns — good for spanning rows","height on img fixes image height (may distort)","Use align='center' on td for center content (old HTML)","Timetables are best represented as HTML tables","Color header row with bgcolor for visual distinction"]
+  },
+  {
+    id:51, tags:["html"],
+    title:"Create an online job application form with fields for applicant name, email, mobile number, qualification, experience, and submit button.",
+    explanation:`Similar to Q15 but adds email and mobile. Good exam form practice with all major input types together.`,
+    code:`&lt;h2&gt;Job Application Form&lt;/h2&gt;
+&lt;form method="POST" action="apply.php"&gt;
+  &lt;table cellpadding="8"&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;label&gt;Full Name:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;input type="text" name="name" size="30" required&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;label&gt;Email:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;input type="email" name="email" size="30" required&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;label&gt;Mobile:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;input type="tel" name="mobile" pattern="[0-9]{10}"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;label&gt;Qualification:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;select name="qual"&gt;
+        &lt;option&gt;BE/BTech&lt;/option&gt;
+        &lt;option&gt;MCA&lt;/option&gt;
+        &lt;option&gt;MBA&lt;/option&gt;
+      &lt;/select&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;label&gt;Experience:&lt;/label&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;input type="number" name="exp" min="0" max="40"&gt; years&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td colspan="2" align="center"&gt;
+        &lt;button type="submit"&gt;Submit Application&lt;/button&gt;
+        &lt;button type="reset"&gt;Clear Form&lt;/button&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/form&gt;`,
+    points:["Using table layout for forms aligns labels and inputs neatly","pattern='[0-9]{10}' validates 10-digit number in browser","size='30' sets visible width of text input","colspan on last row centers buttons across both columns","type='tel' shows numeric keyboard on mobile devices"]
+  },
+  {
+    id:52, tags:["css"],
+    title:"Apply CSS styles using inline, internal, and external methods to design a registration form and styled alert messages.",
+    explanation:`Focus on <b>styled alert messages</b> — success (green), error (red), warning (yellow) boxes. Common UI pattern. CSS classes for different alert types.`,
+    code:`&lt;style&gt;
+/* INTERNAL CSS */
+body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+
+.form-container { background: white; padding: 24px; border-radius: 10px; max-width: 400px; }
+
+.alert { padding: 12px 16px; border-radius: 6px; margin: 10px 0; font-weight: bold; }
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+.alert-info    { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+input { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; }
+button:hover { background: #0056b3; }
+&lt;/style&gt;
+
+&lt;div class="form-container"&gt;
+  &lt;div class="alert alert-success"&gt;✅ Registration successful!&lt;/div&gt;
+  &lt;div class="alert alert-error"&gt;❌ Email already registered!&lt;/div&gt;
+  &lt;div class="alert alert-warning"&gt;⚠️ Please fill all required fields.&lt;/div&gt;
+  &lt;div class="alert alert-info"&gt;ℹ️ Password must be 8+ characters.&lt;/div&gt;
+
+  &lt;!-- INLINE example --&gt;
+  &lt;input type="text" placeholder="Full Name" style="border-color: red;"&gt;
+  &lt;button&gt;Register&lt;/button&gt;
+&lt;/div&gt;`,
+    points:["Alert design pattern: colored background + matching text + border","Create reusable classes (alert, alert-success) not inline styles","Green (#d4edda) for success, red (#f8d7da) for error — convention","border-radius rounds corners of both form and alerts","box-sizing: border-box ensures padding doesn't add to width"]
+  },
+  {
+    id:53, tags:["bootstrap"],
+    title:"Develop a responsive restaurant website homepage using Bootstrap Navbar, Carousel, Cards, and Grid Layout.",
+    explanation:`Restaurant page combining all Bootstrap components. Food cards in a grid, carousel for hero images, dark navbar. Shows practical Bootstrap usage.`,
+    code:`&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;nav class="navbar navbar-dark" style="background:#b5451b"&gt;
+  &lt;div class="container"&gt;
+    &lt;a class="navbar-brand fw-bold"&gt;🍕 TastyBites&lt;/a&gt;
+    &lt;div&gt;
+      &lt;a href="#" class="text-white me-3"&gt;Menu&lt;/a&gt;
+      &lt;a href="#" class="text-white"&gt;Order Now&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;div id="restCarousel" class="carousel slide" data-bs-ride="carousel"&gt;
+  &lt;div class="carousel-inner"&gt;
+    &lt;div class="carousel-item active bg-warning text-center py-5"&gt;
+      &lt;h2 class="display-4"&gt;🍔 Fresh &amp; Delicious&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class="carousel-item bg-danger text-white text-center py-5"&gt;
+      &lt;h2 class="display-4"&gt;🍕 Order Online&lt;/h2&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="carousel-control-prev" data-bs-target="#restCarousel" data-bs-slide="prev"&gt;&lt;span class="carousel-control-prev-icon"&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;button class="carousel-control-next" data-bs-target="#restCarousel" data-bs-slide="next"&gt;&lt;span class="carousel-control-next-icon"&gt;&lt;/span&gt;&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="container my-4"&gt;
+  &lt;h3 class="text-center mb-3"&gt;Our Menu&lt;/h3&gt;
+  &lt;div class="row g-3"&gt;
+    &lt;div class="col-md-3"&gt;&lt;div class="card text-center p-3 shadow"&gt;&lt;h5&gt;🍔 Burger&lt;/h5&gt;&lt;p&gt;Rs. 149&lt;/p&gt;&lt;button class="btn btn-warning btn-sm"&gt;Order&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="col-md-3"&gt;&lt;div class="card text-center p-3 shadow"&gt;&lt;h5&gt;🍕 Pizza&lt;/h5&gt;&lt;p&gt;Rs. 299&lt;/p&gt;&lt;button class="btn btn-warning btn-sm"&gt;Order&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="col-md-3"&gt;&lt;div class="card text-center p-3 shadow"&gt;&lt;h5&gt;🥗 Salad&lt;/h5&gt;&lt;p&gt;Rs. 99&lt;/p&gt;&lt;button class="btn btn-warning btn-sm"&gt;Order&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="col-md-3"&gt;&lt;div class="card text-center p-3 shadow"&gt;&lt;h5&gt;🧁 Dessert&lt;/h5&gt;&lt;p&gt;Rs. 79&lt;/p&gt;&lt;button class="btn btn-warning btn-sm"&gt;Order&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;`,
+    points:["col-md-3 = 4 cards per row (3 of 12 cols × 4 = 12)","fw-bold = font-weight bold (Bootstrap utility)","me-3 = margin-end (right margin) 3 units","btn-sm = small button size","display-4 = large Bootstrap heading size"]
+  },
+  {
+    id:54, tags:["js"],
+    title:"Write a JavaScript program to validate a feedback form including email validation, comment length, and mandatory field checking.",
+    explanation:`Feedback form validation. New concept: check <b>minimum comment length</b> using <code>.length</code> on textarea value. Shows real-world form UX patterns.`,
+    code:`&lt;form onsubmit="return validateFeedback()"&gt;
+  Name: &lt;input id="fbname" type="text"&gt;&lt;br&gt;
+  Email: &lt;input id="fbemail" type="text"&gt;&lt;br&gt;
+  Rating: &lt;select id="fbrating"&gt;
+    &lt;option value=""&gt;--Select--&lt;/option&gt;
+    &lt;option&gt;5 - Excellent&lt;/option&gt;
+    &lt;option&gt;4 - Good&lt;/option&gt;
+    &lt;option&gt;3 - Average&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+  Comments: &lt;textarea id="fbcomment" rows="3" cols="30"&gt;&lt;/textarea&gt;&lt;br&gt;
+  &lt;p id="fberr" style="color:red"&gt;&lt;/p&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function validateFeedback() {
+  var name    = document.getElementById("fbname").value.trim();
+  var email   = document.getElementById("fbemail").value.trim();
+  var rating  = document.getElementById("fbrating").value;
+  var comment = document.getElementById("fbcomment").value.trim();
+  var errEl   = document.getElementById("fberr");
+
+  if (!name) { errEl.textContent = "Name is required!"; return false; }
+
+  var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!re.test(email)) { errEl.textContent = "Invalid email!"; return false; }
+
+  if (!rating) { errEl.textContent = "Please select a rating!"; return false; }
+
+  if (comment.length &lt; 20) {
+    errEl.textContent = "Comment must be at least 20 characters! (Current: " + comment.length + ")";
+    return false;
+  }
+  errEl.textContent = "";
+  alert("Feedback submitted! Thank you.");
+  return true;
+}
+&lt;/script&gt;`,
+    points:["textContent is safer than innerHTML for plain text (no HTML injection)","Check textarea length: comment.length < 20","Empty select check: rating === '' (default option value)","Show current character count to guide user","!name is shorthand for name === '' (falsy check)"]
+  },
+  {
+    id:55, tags:["js"],
+    title:"Create a web page that changes text style, image size, and background color dynamically using JavaScript events.",
+    explanation:`Combines Q7 and Q43. Uses <b>event listeners</b> — both onclick and onchange (for a color picker input). Shows range of DOM event types.`,
+    code:`&lt;h2 id="styledText"&gt;Dynamic Styled Text&lt;/h2&gt;
+&lt;img id="styledImg" src="sample.jpg" width="200"&gt;&lt;br&gt;&lt;br&gt;
+
+Background Color: &lt;input type="color" id="bgPicker" onchange="changeBg()"&gt;&lt;br&gt;
+&lt;button onclick="toggleBold()"&gt;Bold&lt;/button&gt;
+&lt;button onclick="toggleItalic()"&gt;Italic&lt;/button&gt;
+&lt;button onclick="increaseSize()"&gt;A+&lt;/button&gt;
+&lt;button onclick="decreaseSize()"&gt;A-&lt;/button&gt;
+&lt;button onclick="bigImg()"&gt;🔍+&lt;/button&gt;
+&lt;button onclick="smallImg()"&gt;🔍-&lt;/button&gt;
+
+&lt;script&gt;
+var el = document.getElementById("styledText");
+var img = document.getElementById("styledImg");
+var size = 24;
+var bold = false, italic = false;
+
+function changeBg() { document.body.style.backgroundColor = document.getElementById("bgPicker").value; }
+function toggleBold()   { bold = !bold; el.style.fontWeight = bold ? "bold" : "normal"; }
+function toggleItalic() { italic = !italic; el.style.fontStyle = italic ? "italic" : "normal"; }
+function increaseSize() { size += 4; el.style.fontSize = size + "px"; }
+function decreaseSize() { if (size &gt; 10) { size -= 4; el.style.fontSize = size + "px"; } }
+function bigImg()   { img.style.width = (parseInt(img.style.width) + 50) + "px"; }
+function smallImg() { img.style.width = Math.max(50, parseInt(img.style.width) - 50) + "px"; }
+&lt;/script&gt;`,
+    points:["type='color' shows a color picker input","onchange fires when user picks a new color","Toggle variables (bold = !bold) flip true/false","parseInt(el.style.width) gets numeric value from '200px'","Math.max prevents image from going below 50px"]
+  },
+  {
+    id:56, tags:["js"],
+    title:"Write a JavaScript program to perform area calculations of circle, rectangle, and triangle using functions and buttons.",
+    explanation:`Math area formulas in JS. Uses <code>Math.PI</code> for π. Each shape has its own function. Good practice for multiple functions with different parameters.`,
+    code:`Shape: &lt;select id="shapeSelect" onchange="showInputs()"&gt;
+  &lt;option value=""&gt;--Select--&lt;/option&gt;
+  &lt;option value="circle"&gt;Circle&lt;/option&gt;
+  &lt;option value="rectangle"&gt;Rectangle&lt;/option&gt;
+  &lt;option value="triangle"&gt;Triangle&lt;/option&gt;
+&lt;/select&gt;
+&lt;div id="shapeInputs"&gt;&lt;/div&gt;
+&lt;p id="areaResult"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+function showInputs() {
+  var shape = document.getElementById("shapeSelect").value;
+  var html = "";
+  if (shape === "circle")
+    html = "Radius: &lt;input id='r' type='number'&gt; &lt;button onclick='calcArea()'>Calculate&lt;/button&gt;";
+  else if (shape === "rectangle")
+    html = "Length: &lt;input id='l' type='number'&gt; Width: &lt;input id='w' type='number'&gt; &lt;button onclick='calcArea()'>Calculate&lt;/button&gt;";
+  else if (shape === "triangle")
+    html = "Base: &lt;input id='b' type='number'&gt; Height: &lt;input id='h' type='number'&gt; &lt;button onclick='calcArea()'>Calculate&lt;/button&gt;";
+  document.getElementById("shapeInputs").innerHTML = html;
+}
+function calcArea() {
+  var shape = document.getElementById("shapeSelect").value;
+  var area;
+  if (shape === "circle") { var r = parseFloat(document.getElementById("r").value); area = Math.PI * r * r; }
+  else if (shape === "rectangle") { area = parseFloat(document.getElementById("l").value) * parseFloat(document.getElementById("w").value); }
+  else if (shape === "triangle") { area = 0.5 * parseFloat(document.getElementById("b").value) * parseFloat(document.getElementById("h").value); }
+  document.getElementById("areaResult").innerHTML = "Area = " + area.toFixed(4);
+}
+&lt;/script&gt;`,
+    points:["Math.PI = 3.14159... built-in constant","Circle area = πr², Rectangle = l×w, Triangle = ½×b×h","Dynamic innerHTML lets you build inputs based on selection","onchange on select fires when dropdown value changes","toFixed(4) shows 4 decimal places for precision"]
+  },
+  {
+    id:57, tags:["php"],
+    title:"Design a PHP script to display customer details and current date/time information from the server.",
+    explanation:`Combines hardcoded customer data display with PHP date functions. Similar to Q9 and Q33 combined.`,
+    code:`&lt;?php
+// Customer data
+$customers = [
+  ["name"=>"Amit Shah",  "phone"=>"9876543210", "plan"=>"Premium", "since"=>"2022"],
+  ["name"=>"Priya Patel","phone"=>"8765432109", "plan"=>"Basic",   "since"=>"2023"],
+];
+
+echo "&lt;h2&gt;Customer Details&lt;/h2&gt;";
+echo "&lt;table border='1' cellpadding='10' style='border-collapse:collapse'&gt;";
+echo "&lt;tr style='background:#4CAF50;color:white'&gt;
+        &lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Phone&lt;/th&gt;&lt;th&gt;Plan&lt;/th&gt;&lt;th&gt;Member Since&lt;/th&gt;
+      &lt;/tr&gt;";
+foreach ($customers as $c) {
+  echo "&lt;tr&gt;&lt;td&gt;{$c['name']}&lt;/td&gt;&lt;td&gt;{$c['phone']}&lt;/td&gt;";
+  echo "&lt;td&gt;{$c['plan']}&lt;/td&gt;&lt;td&gt;{$c['since']}&lt;/td&gt;&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+
+// Server date/time
+echo "&lt;h2&gt;Server Date &amp; Time&lt;/h2&gt;";
+echo "&lt;p&gt;Date: " . date("D, d M Y") . "&lt;/p&gt;";
+echo "&lt;p&gt;Time: " . date("h:i:s A") . "&lt;/p&gt;";
+echo "&lt;p&gt;Timestamp: " . time() . "&lt;/p&gt;";
+echo "&lt;p&gt;Timezone: " . date_default_timezone_get() . "&lt;/p&gt;";
+?&gt;`,
+    points:["date('D, d M Y') = Mon, 15 May 2024 format","time() returns Unix timestamp (seconds since Jan 1, 1970)","date_default_timezone_get() returns current timezone","Use date_default_timezone_set('Asia/Kolkata') for IST","Combine data display + system info for comprehensive PHP demos"]
+  },
+  {
+    id:58, tags:["php"],
+    title:"Write a PHP program to accept student registration details using POST method and display registration success message.",
+    explanation:`Like Q22 but with a styled success message instead of just echoing data. Shows a confirmation card after successful form submission.`,
+    code:`&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $name   = htmlspecialchars($_POST['name']);
+  $roll   = htmlspecialchars($_POST['rollno']);
+  $email  = htmlspecialchars($_POST['email']);
+  $branch = htmlspecialchars($_POST['branch']);
+
+  echo "&lt;div style='background:#d4edda;border:1px solid #c3e6cb;padding:20px;border-radius:8px;max-width:400px;margin:20px'&gt;";
+  echo "&lt;h2 style='color:#155724'&gt;✅ Registration Successful!&lt;/h2&gt;";
+  echo "&lt;p&gt;Welcome, &lt;b&gt;$name&lt;/b&gt;!&lt;/p&gt;";
+  echo "&lt;p&gt;Your registration details:&lt;/p&gt;";
+  echo "&lt;ul&gt;";
+  echo "&lt;li&gt;Roll No: $roll&lt;/li&gt;";
+  echo "&lt;li&gt;Email: $email&lt;/li&gt;";
+  echo "&lt;li&gt;Branch: $branch&lt;/li&gt;";
+  echo "&lt;li&gt;Registered on: " . date('d M Y, h:i A') . "&lt;/li&gt;";
+  echo "&lt;/ul&gt;";
+  echo "&lt;/div&gt;";
+} else {
+?&gt;
+&lt;form method="POST" action=""&gt;
+  Name: &lt;input type="text" name="name" required&gt;&lt;br&gt;
+  Roll No: &lt;input type="text" name="rollno" required&gt;&lt;br&gt;
+  Email: &lt;input type="email" name="email"&gt;&lt;br&gt;
+  Branch: &lt;select name="branch"&gt;
+    &lt;option&gt;Computer Engineering&lt;/option&gt;
+    &lt;option&gt;IT&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+&lt;?php } ?&gt;`,
+    points:["if POST: show result | else: show form — classic PHP pattern","Green success box uses Bootstrap-like inline styles","Registration timestamp adds credibility to confirmation","Use else { ?> HTML <?php } to mix PHP and HTML cleanly","Always show what data was submitted in confirmation"]
+  },
+  {
+    id:59, tags:["php"],
+    title:"Implement a PHP program for numeric operations such as finding factorial, palindrome number, and reverse number.",
+    explanation:`PHP numeric algorithms. <b>Factorial</b>: multiply from 1 to n. <b>Palindrome</b>: reverse == original. <b>Reverse</b>: strrev() or loop. Commonly tested in college.`,
+    code:`&lt;?php
+// ---- FACTORIAL ----
+function factorial($n) {
+  if ($n == 0 || $n == 1) return 1;
+  return $n * factorial($n - 1); // Recursive
+}
+
+// ---- REVERSE NUMBER ----
+function reverseNum($n) {
+  return (int) strrev((string) $n);
+}
+
+// ---- PALINDROME CHECK ----
+function isPalindrome($n) {
+  return $n == reverseNum($n);
+}
+
+// Test values
+$nums = [5, 121, 123, 0, 7];
+
+echo "&lt;table border='1' cellpadding='10' style='border-collapse:collapse'&gt;";
+echo "&lt;tr style='background:#333;color:white'&gt;
+        &lt;th&gt;Number&lt;/th&gt;&lt;th&gt;Factorial&lt;/th&gt;&lt;th&gt;Reversed&lt;/th&gt;&lt;th&gt;Palindrome?&lt;/th&gt;
+      &lt;/tr&gt;";
+
+foreach ($nums as $n) {
+  $fact = ($n &lt;= 12) ? factorial($n) : "Too large";
+  $rev  = reverseNum($n);
+  $pal  = isPalindrome($n) ? "✅ Yes" : "❌ No";
+  echo "&lt;tr&gt;&lt;td&gt;$n&lt;/td&gt;&lt;td&gt;$fact&lt;/td&gt;&lt;td&gt;$rev&lt;/td&gt;&lt;td&gt;$pal&lt;/td&gt;&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+?&gt;`,
+    points:["Recursive factorial: f(n) = n × f(n-1), base case f(0)=f(1)=1","strrev() reverses a string — cast int to string first","Palindrome: 121 reversed = 121 → same → palindrome","Ternary operator for inline conditional: cond ? true : false","PHP functions are defined with function name($params) { }"]
+  },
+  {
+    id:60, tags:["php"],
+    title:"Create a PHP script to store book names and authors in an associative array and display them in table format.",
+    explanation:`Final practical — clean summary of PHP associative arrays + table display. Perfect revision of Q12/Q48 pattern with books instead of marks/products.`,
+    code:`&lt;?php
+$books = [
+  "The Pragmatic Programmer" => "Andrew Hunt",
+  "Clean Code"               => "Robert C. Martin",
+  "You Don't Know JS"        => "Kyle Simpson",
+  "Eloquent JavaScript"      => "Marijn Haverbeke",
+  "PHP & MySQL Web Dev"      => "Luke Welling",
+  "HTML and CSS"             => "Jon Duckett",
+];
+
+echo "&lt;h2&gt;📚 Book Library&lt;/h2&gt;";
+echo "&lt;table border='1' cellpadding='12' style='border-collapse:collapse; width:500px'&gt;";
+echo "&lt;tr style='background:#6f42c1;color:white'&gt;
+        &lt;th&gt;Sr. No&lt;/th&gt;&lt;th&gt;Book Title&lt;/th&gt;&lt;th&gt;Author&lt;/th&gt;
+      &lt;/tr&gt;";
+
+$sr = 1;
+foreach ($books as $title => $author) {
+  $bg = ($sr % 2 == 0) ? "#f3e8ff" : "white";
+  echo "&lt;tr style='background:$bg'&gt;";
+  echo "&lt;td align='center'&gt;$sr&lt;/td&gt;";
+  echo "&lt;td&gt;&lt;b&gt;$title&lt;/b&gt;&lt;/td&gt;";
+  echo "&lt;td&gt;&lt;i&gt;$author&lt;/i&gt;&lt;/td&gt;";
+  echo "&lt;/tr&gt;";
+  $sr++;
+}
+echo "&lt;/table&gt;";
+echo "&lt;p&gt;Total Books: " . count($books) . "&lt;/p&gt;";
+?&gt;`,
+    points:["Associative array: 'key' => 'value' stores book→author pairs","count($arr) gives total number of items","Manual $sr counter for serial number in foreach","Alternate row colors with $sr % 2 == 0 check","b and i tags inside td for bold title and italic author"]
+  }
+];
+
+// Render
+function renderCards(filter = 'all', search = '') {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  const filtered = practicals.filter(p => {
+    const matchTag = filter === 'all' || p.tags.includes(filter);
+    const matchSearch = search === '' || p.title.toLowerCase().includes(search.toLowerCase());
+    return matchTag && matchSearch;
+  });
+  filtered.forEach(p => {
+    const done = localStorage.getItem('p' + p.id) === '1';
+    const card = document.createElement('div');
+    card.className = 'card' + (done ? ' done' : '');
+    card.id = 'card' + p.id;
+
+    const tagHTML = p.tags.map(t => `<span class="tag ${t}">${t.toUpperCase()}</span>`).join('');
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(${p.id})">
+        <span class="card-num">#${String(p.id).padStart(2,'0')}</span>
+        <span class="card-title">${p.title}</span>
+        <div class="tags">${tagHTML}</div>
+        <button class="check-btn" onclick="event.stopPropagation(); toggleDone(${p.id})" title="Mark done">
+          ${done ? '✓' : ''}
+        </button>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="section-label">What & Why</div>
+        <div class="explanation">${p.explanation}</div>
+        <div class="section-label">Code</div>
+        <pre><code>${p.code}</code><button class="copy-btn" onclick="copyCode(this)">COPY</button></pre>
+        <div class="section-label">Key Points</div>
+        <div class="key-points">${p.points.map(pt => `<div class="kp">${pt}</div>`).join('')}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  updateProgress();
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card' + id);
+  card.classList.toggle('open');
+}
+
+function toggleDone(id) {
+  const current = localStorage.getItem('p' + id) === '1';
+  localStorage.setItem('p' + id, current ? '0' : '1');
+  const card = document.getElementById('card' + id);
+  if (card) {
+    card.classList.toggle('done', !current);
+    card.querySelector('.check-btn').innerHTML = !current ? '✓' : '';
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  let done = 0;
+  for (let i = 1; i <= 60; i++) { if (localStorage.getItem('p' + i) === '1') done++; }
+  document.getElementById('pbar').style.width = (done / 60 * 100) + '%';
+  document.getElementById('ptext').textContent = `${done} / 60 completed (${Math.round(done/60*100)}%)`;
+}
+
+function copyCode(btn) {
+  const code = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'COPIED!';
+    setTimeout(() => btn.textContent = 'COPY', 1500);
+  });
+}
+
+// Filters
+let activeFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards(activeFilter, document.getElementById('searchBox').value);
+  });
+});
+
+document.getElementById('searchBox').addEventListener('input', e => {
+  renderCards(activeFilter, e.target.value);
+});
+
+renderCards();
+</script>
 </body>
 </html>
